@@ -16,8 +16,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+    - name: Make Intent Classifier
+      working-directory: ./intent
+      run: make_model.sh
 
     - name: Setup Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
