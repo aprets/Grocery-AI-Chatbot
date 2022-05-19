@@ -7,6 +7,7 @@ class DialogueState():
         self.name: str = name
         self.default_next_state = default_next_state
         self.state_logic = state_logic
+        self.turn = 0
 
         self.response_intent = None
         self.state_entities = entities
@@ -181,16 +182,25 @@ class DialogueManager():
         return
 
 
-    def run_state(self):
+    def run_state(self, input):
         """ Handle the running of a state"""
-        self.bot_turn(start = True)
-        self.user_turn(start = True)
+        if self.current_state.turn == 0:
+            self.bot_turn(start = True)
 
-        requires_response = self.bot_turn(start = False)
+        elif self.current_state.position == 1:
+            self.user_turn(start = True)
+            self.run_state()
 
-        if requires_response:
-            self.user_turn(start = False)
+        elif self.current_state.position == 2:
+            requires_response = self.bot_turn(start = False)
+            
+        elif self.current_state.position == 3:
+            if requires_response:
 
+                self.user_turn(start = False)
+                self.run_state()
+ 
+        self.current_state.turn += 1
         return
 
 
@@ -251,3 +261,7 @@ if __name__ == "__main__":
     dm = DialogueManager()
 
     dm.start_dialogue()
+
+    dm.run_state("input")
+    dm.run_state()
+
