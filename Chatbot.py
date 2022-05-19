@@ -184,23 +184,24 @@ class DialogueManager():
 
     def run_state(self, input):
         """ Handle the running of a state"""
-        if self.current_state.turn == 0:
+        self.current_state.turn += 1
+        
+        if self.current_state.turn == 1:
             self.bot_turn(start = True)
 
-        elif self.current_state.position == 1:
+        elif self.current_state.position == 2:
             self.user_turn(start = True)
             self.run_state()
 
-        elif self.current_state.position == 2:
+        elif self.current_state.position == 3:
             requires_response = self.bot_turn(start = False)
             
-        elif self.current_state.position == 3:
+        elif self.current_state.position == 4:
             if requires_response:
 
                 self.user_turn(start = False)
                 self.run_state()
  
-        self.current_state.turn += 1
         return
 
 
