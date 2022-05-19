@@ -7,7 +7,7 @@ class DialogueState():
         self.name: str = name
         self.default_next_state = default_next_state
         self.state_logic = state_logic
-        self.turn = 0
+        self.position = 0
 
         self.response_intent = None
         self.state_entities = entities
@@ -116,7 +116,7 @@ class DialogueManager():
                 "name": "init",
                 "default_next_state": "add_to_basket",
                 "state_logic": init_logic, 
-                "entities": ["entity_one_name", "entity_two_name"]
+                # "entities": ["entity_one_name", "entity_two_name"]
             },
             "check_availability": {
                 "name": "check_availability",
@@ -182,11 +182,11 @@ class DialogueManager():
         return
 
 
-    def run_state(self, input):
+    def run_state(self, input=None):
         """ Handle the running of a state"""
-        self.current_state.turn += 1
+        self.current_state.position += 1
         
-        if self.current_state.turn == 1:
+        if self.current_state.position == 1:
             self.bot_turn(start = True)
 
         elif self.current_state.position == 2:
@@ -198,7 +198,6 @@ class DialogueManager():
             
         elif self.current_state.position == 4:
             if requires_response:
-
                 self.user_turn(start = False)
                 self.run_state()
  
@@ -264,5 +263,5 @@ if __name__ == "__main__":
     dm.start_dialogue()
 
     dm.run_state("input")
-    dm.run_state()
+    # dm.run_state()
 
