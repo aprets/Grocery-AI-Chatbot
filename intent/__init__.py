@@ -3,7 +3,7 @@ import pickle
 import spacy
 import numpy as np
 
-with open('intent.pickle', 'rb') as input:
+with open('intent_model.pickle', 'rb') as input:
     model, le = pickle.load(input)
 
 nlp = spacy.load('en_core_web_md', exclude=[
@@ -20,10 +20,9 @@ def encode_messages(messages, nlp=nlp):
         X[idx, :] = doc.vector
     return X
 
-
-def get_oneoff_prediction(message, model, le):
+def predict_intent(message):
     X = encode_messages([message])
     return le.inverse_transform(model.predict(X))[0]
 
-
-print(get_oneoff_prediction('restart', model, le))
+if __name__ == '__main__':
+	print(predict_intent('add chicken to basket'))

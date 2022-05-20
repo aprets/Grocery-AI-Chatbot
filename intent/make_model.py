@@ -6,7 +6,7 @@ import spacy
 
 np.random.seed(0)
 
-with open('dataset.json') as json_file:
+with open('intent/dataset.json') as json_file:
     raw_dataset = json.load(json_file)
 # with open('badset_test.json') as json_file:
 #     raw_test = json.load(json_file)
@@ -107,5 +107,5 @@ model = svm_train(train_X, train_y, tuned_parameters, cv_splits)
 
 import pickle
 
-with open('intent.pickle', 'wb') as output:
+with open('intent_model.pickle', 'wb') as output:
 	pickle.dump((model, le), output)
