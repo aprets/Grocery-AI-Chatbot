@@ -1,4 +1,4 @@
-from state_logic import *
+from .state_logic import *
 
 class DialogueState():
     """ Dialogue state, maintains entities and logic"""
@@ -47,15 +47,15 @@ STATE_DEFAULTS = {
     },
     "address_details": {
         "name": "address_details",
-                "default_next_state": "timeslot_request",
+                "default_next_state": "timeslot_details",
                 "state_logic": address_details_logic,
                 "entity_mask": ["entity_one_name", "entity_two_name"]
 
     },
-    "timeslot_request": {
-        "name": "timeslot_request",
+    "timeslot_details": {
+        "name": "timeslot_details",
                 "default_next_state": "payment_request",
-                "state_logic": timeslot_request_logic,
+                "state_logic": timeslot_details_logic,
                 "entity_mask": ["entity_one_name", "entity_two_name"]
 
     },

@@ -42,7 +42,7 @@ def address_details_logic(self, start):
         print("end")
 
 
-def timeslot_request_logic(self, start):
+def timeslot_details_logic(self, start):
     """Logic for the timeslot request state"""
 
     if start:

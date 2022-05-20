@@ -1,7 +1,9 @@
 import typing
 from collections import deque
 
-from states import STATE_DEFAULTS, DialogueState
+from .states import STATE_DEFAULTS, DialogueState
+
+from intent import predict_intent
 
 
 class DialogueManager():
@@ -81,7 +83,7 @@ class DialogueManager():
     def get_intent(self, message):
         """ Get intent from an utterance"""
 
-        return "intent"
+        return predict_intent(message)
 
     def get_entities(self, message):
         """ Get entities from an utterance"""
@@ -94,16 +96,3 @@ class DialogueManager():
         self.prior_states.append(self.current_state)
         self.current_state = new_state
         return
-
-
-if __name__ == "__main__":
-    dm = DialogueManager()
-
-    dm.start_dialogue()
-
-    print(dm.run_state("input"))
-    print(dm.run_state("input"))
-    print(dm.run_state("input"))
-    print(dm.run_state("input"))
-    print(dm.run_state("input"))
-    # dm.run_state()
