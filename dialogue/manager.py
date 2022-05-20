@@ -16,7 +16,7 @@ class DialogueManager():
 
         self.prior_states = deque()
         self.current_state = DialogueState(
-            **self.state_defaults["add_to_basket"])
+            **self.state_defaults["init"])
 
     def start_dialogue(self):
         """ Start the dialogue"""
