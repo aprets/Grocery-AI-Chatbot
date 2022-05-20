@@ -16,10 +16,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Make Intent Classifier
-      working-directory: ./intent
-      run: ./make_model.sh
-
     - name: Setup Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
       with:

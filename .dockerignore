@@ -1,0 +1,6 @@
+intent
+!intent/__init__.py
+ner
+!ner/__init__.py
+.vscode
+.github

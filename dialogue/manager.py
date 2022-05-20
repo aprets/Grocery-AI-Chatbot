@@ -5,6 +5,8 @@ from .states import STATE_DEFAULTS, DialogueState
 
 from intent import predict_intent
 
+from ner import ner_spacy
+
 
 class DialogueManager():
     """ Dialogue Manager that handles state"""
@@ -26,8 +28,7 @@ class DialogueManager():
         """ Handle the running of a state"""
         self.current_state.position = (self.current_state.position + 1) % 5
 
-        print(
-            f'Intent {self.current_state.name}, Position {self.current_state.position}')
+        print(f'Sate {self.current_state.name}, Position {self.current_state.position}')
 
         if self.current_state.position == 1:
             return self.bot_turn(start=True)
@@ -54,6 +55,8 @@ class DialogueManager():
 
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
+
+        print(f'Intent {turn_intent}, Entities {turn_entities}')
 
         if start:
             # Update state variables
@@ -88,7 +91,10 @@ class DialogueManager():
     def get_entities(self, message):
         """ Get entities from an utterance"""
 
-        return {"entity_one": "one"}
+        ent_dict = {}
+        for ent in ner_spacy(message).ents:
+            ent_dict[ent.label_] = ent.text
+        return ent_dict
 
     def update_state(self, new_state):
         """ Save the current dialogue state to history and enter a new state."""
