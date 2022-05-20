@@ -4,3 +4,4 @@ ner
 !ner/__init__.py
 .vscode
 .github
+venv
