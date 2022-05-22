@@ -81,8 +81,8 @@ class DialogueManager():
             # State is locked in by previous message, 
             # ensure that it doesnt get switched and get entities
             self.current_state.state_entities = pass_entities
-            self.current_state.lock_state = False
-        
+            self.current_state.turn = "confirm"
+
             return self.current_state.state_logic(self.current_state)
         
         else:
