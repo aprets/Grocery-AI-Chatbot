@@ -33,6 +33,7 @@ class DialogueManager():
             current_intent = "init"
 
         if self.current_state.turn == "confirm":
+            
             # Select next state based on intent
             if current_intent == "negative":
                 next_state_name = self.current_state.name
@@ -64,26 +65,26 @@ class DialogueManager():
             return self.current_state.init_message
 
         elif self.current_state.turn == "unknown":
+
+            # Check if intent indicates a state else reset
             if current_intent not in STATE_DEFAULTS:
                 current_intent = "init"
 
-            # unless state already known
+            # Move to detected state
             new_state = DialogueState(
                 **STATE_DEFAULTS[current_intent], 
                 entities = pass_entities)
             self.update_state(new_state)
 
-            # Change to add_to_basket
-            # Do you want to add chicken to basket?
             return self.current_state.state_logic(self.current_state)
         
         elif self.current_state.turn == "lock":
-
+            
+            # State is locked in by previous message, 
+            # ensure that it doesnt get switched and get entities
             self.current_state.state_entities = pass_entities
             self.current_state.lock_state = False
         
-            # Change to add_to_basket
-            # Do you want to add chicken to basket?
             return self.current_state.state_logic(self.current_state)
         
         else:
