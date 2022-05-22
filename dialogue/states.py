@@ -5,14 +5,13 @@ import uuid
 class DialogueState():
     """ Dialogue state, maintains entities and logic"""
 
-    def __init__(self, name: str, init_message, default_next_state, state_logic, lock_state=False, entities={}, entity_mask=[], turn="confirm"):
+    def __init__(self, name: str, init_message, default_next_state, state_logic, entities={}, entity_mask=[], turn="confirm"):
         self.name: str = name
         self.uuid = uuid.uuid4()
         self.default_next_state = default_next_state
         self.state_logic = state_logic
         self.init_message = init_message
         self.turn = turn
-        self.lock_state = lock_state
 
         self.current_response = None
         self.state_entities = entities

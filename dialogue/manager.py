@@ -33,33 +33,33 @@ class DialogueManager():
 
             current_intent, pass_entities = self.user_turn(input)
 
-            confirm = False
-            entities = {}
-
+            # Select next state based on intent
             if current_intent == "negative":
                 next_state_name = self.current_state.name
-                turn = "confirm"
+                entities = {}
+                next_turn = "confirm"
 
             elif current_intent == "affirmative":
                 next_state_name = self.current_state.default_next_state
-                turn = "confirm"
+                entities = {}
+                next_turn = "confirm"
 
             else: # Special case with known next state
                 next_state_name = current_intent
-                confirm = True
-                turn = "lock"
                 entities = pass_entities
+                next_turn = "lock"
 
+            # Create next state with defaults
             new_state = DialogueState(
                 **STATE_DEFAULTS[next_state_name],
                 entities=entities,
             )
 
-            new_state.confirm = confirm
-            new_state.turn = turn
+            # Update variable values
             new_state.entities = entities
+            new_state.turn = next_turn
 
-            # returns state init_message
+            # Set state and broadcast message
             self.update_state(new_state)
             return self.current_state.init_message
 
@@ -87,8 +87,8 @@ class DialogueManager():
             return self.current_state.state_logic(self.current_state)
         
         else:
-
-            return None
+            # Run custom turn logic
+            return self.current_state.state_logic(self.current_state)
 
     def bot_turn(self, start):
         """ Run a bot turn"""
