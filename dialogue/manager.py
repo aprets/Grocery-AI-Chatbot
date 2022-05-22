@@ -24,25 +24,7 @@ class DialogueManager():
 
     def run_state(self, input=None):
         """ Handle the running of a state"""
-        if not self.current_state.confirm:
-            current_intent, pass_entities = self.user_turn(input)
-
-            # unless state already known
-            if not self.current_state.name == self.current_state.lock_state:
-                new_state = DialogueState(
-                    **STATE_DEFAULTS[current_intent], 
-                    entities = pass_entities)
-                self.update_state(new_state)
-            else:
-                self.current_state.state_entities = pass_entities
-                self.current_state.response_intent = current_intent
-                self.current_state.lock_state = False
-            
-            # Change to add_to_basket
-            # Do you want to add chicken to basket?
-            return self.current_state.state_logic(self.current_state)
-
-        else:
+        if self.current_state.turn == "confirm":
             """
             User: Yes/No
             select new state
@@ -66,7 +48,6 @@ class DialogueManager():
                 confirm = True
                 lock_state = True
                 entities = pass_entities
-                print("odd case")
 
             new_state = DialogueState(
                 **STATE_DEFAULTS[next_state_name],
@@ -80,6 +61,26 @@ class DialogueManager():
             self.update_state(new_state)
             return self.current_state.init_message
 
+        elif self.current_state.turn == "unknown":
+            current_intent, pass_entities = self.user_turn(input)
+
+            # unless state already known
+            if not self.current_state.name == self.current_state.lock_state:
+                new_state = DialogueState(
+                    **STATE_DEFAULTS[current_intent], 
+                    entities = pass_entities)
+                self.update_state(new_state)
+            else:
+                self.current_state.state_entities = pass_entities
+                self.current_state.lock_state = False
+            
+            # Change to add_to_basket
+            # Do you want to add chicken to basket?
+            return self.current_state.state_logic(self.current_state)
+        
+        else:
+
+            return None
 
     def bot_turn(self, start):
         """ Run a bot turn"""
@@ -96,8 +97,10 @@ class DialogueManager():
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
 
-        print(f'Message: {message}, Intent {turn_intent}, Entities {turn_entities}')
 
+        print(f'    Message: {message}, Intent {turn_intent}, Entities {turn_entities}')
+
+        self.current_state.current_response = message
         self.current_state.state_entities.update(turn_entities)
 
         return turn_intent, turn_entities
@@ -119,7 +122,7 @@ class DialogueManager():
 
     def update_state(self, new_state):
         """ Save the current dialogue state to history and enter a new state."""
-        print(f'State {new_state.name}({new_state.uuid}), confirm={new_state.confirm}')
+        print(f'State {new_state.name}({new_state.uuid}), turn={new_state.turn}')
 
         self.prior_states.append(self.current_state)
         self.current_state = new_state
