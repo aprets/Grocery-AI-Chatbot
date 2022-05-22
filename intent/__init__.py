@@ -22,7 +22,12 @@ def encode_messages(messages, nlp=nlp):
 
 def predict_intent(message):
     X = encode_messages([message])
-    return le.inverse_transform(model.predict(X))[0]
+    probabilities = model.predict_proba(X)[0]
+    max_value = np.max(probabilities)
+    max_index = np.where(probabilities == max_value)[0]
+    if (max_value <= 0.5):
+        return 'unknown'
+    return le.inverse_transform(max_index)[0]
 
 if __name__ == '__main__':
-	print(predict_intent('add chicken to basket'))
+	print(predict_intent('chicken'))
