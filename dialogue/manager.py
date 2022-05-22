@@ -60,7 +60,7 @@ class DialogueManager():
 
             # Set state and broadcast message
             self.update_state(new_state)
-            return self.current_state.init_message
+            return self.current_state.init_message if not next_turn == "lock" else self.current_state.state_logic(self.current_state)
 
         elif self.current_state.turn == "unknown":
 
