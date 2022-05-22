@@ -46,9 +46,18 @@ dm = DialogueManager()
 print(dm.run_state("get bread"))
 print(dm.run_state("yes"))
 
+print()
+print()
+
 print('No')
 dm = DialogueManager()
 print(dm.run_state("no"))
 print(dm.run_state("Salmon plz"))
 
+print()
+print()
+
+print('No')
+dm = DialogueManager()
+print(dm.run_state("deliver to 25 central avenue, Guildford, GU27XE "))
 # dm.run_state()

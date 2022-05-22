@@ -12,9 +12,14 @@ def confirm_handler(self: "DialogueState"):
             missing_details.append(e)
     
     if missing_details:
-        return_string = "Missing:" + " ".join(missing_details)
+        return_string = "Missing: " + ", ".join([detail.capitalize() for detail in missing_details])
     else:
-        return_string = "Please confirm:" + " ".join([k +":" + v for k, v in self.state_entities.items()])
+        return_string = "Please confirm the following:\n\n"
+        for k, v in self.state_entities.items():
+            return_string += f'The {k.lower()} you chose is {v}'
+            return_string += '\n'
+        return_string += '\n\nYou can say "Yes" or "No" to confirm.'
+
     
     return return_string
 
