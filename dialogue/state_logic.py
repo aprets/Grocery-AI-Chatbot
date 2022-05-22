@@ -12,12 +12,11 @@ def confirm_handler(self: "DialogueState"):
             missing_details.append(e)
     
     if missing_details:
-
         return_string = "You are missing the following:\n"
         for v in missing_details:
             return_string += f'  - {v.title()}\n'
         return_string += '\n Please try again with the correct options.'
-        self.turn = "negative"
+        self.turn = "unknown"
 
     else:
         return_string = "Please confirm the following:\n"
@@ -26,6 +25,7 @@ def confirm_handler(self: "DialogueState"):
         return_string += '\nYou can say "Yes" or "No" to confirm.'
 
     return return_string
+
 
 def init_logic(self: "DialogueState"):
     if self.turn == "confirm":
@@ -39,20 +39,23 @@ def check_availability_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
+        return f"{self.name}, {self.turn}"
+
 
 def add_to_basket_logic(self: "DialogueState"):
     """Logic for the add to basket state"""
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
+        return f"{self.name}, {self.turn}"
+
+
 def remove_from_basket_logic(self: "DialogueState"):
     """Logic for the remove from basket state"""
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
+        return f"{self.name}, {self.turn}"
 
 
 def address_details_logic(self: "DialogueState"):
@@ -60,8 +63,7 @@ def address_details_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
-
+        return f"{self.name}, {self.turn}"
 
 
 def timeslot_details_logic(self: "DialogueState"):
@@ -69,21 +71,24 @@ def timeslot_details_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"    
+        return f"{self.name}, {self.turn}"
     
+
 def payment_details_logic(self: "DialogueState"):
     """Logic for the payment details state"""
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
+        return f"{self.name}, {self.turn}"
+
 
 def confirm_order_logic(self: "DialogueState"):
     """Logic for the confirm order state"""
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
+        return f"{self.name}, {self.turn}"
+
 
 def exit_logic(self: "DialogueState"):
     """Logic for the exit state"""
@@ -91,4 +96,4 @@ def exit_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return "confirmed"
+        return f"{self.name}, {self.turn}"

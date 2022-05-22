@@ -25,7 +25,6 @@ class DialogueManager():
     def run_state(self, input=None):
         """ Handle the running of a state"""
         current_intent, pass_entities = self.ingest(input)
-
         # Handle unknown state
         if current_intent == "unknown" and not self.current_state == "lock":
             # Reset bot to start essentially
@@ -33,7 +32,7 @@ class DialogueManager():
             current_intent = "init"
 
         if self.current_state.turn == "confirm":
-            
+
             # Select next state based on intent
             if current_intent == "negative":
                 next_state_name = self.current_state.name
