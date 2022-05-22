@@ -60,10 +60,9 @@ class DialogueManager():
 
             # Set state and broadcast message
             self.update_state(new_state)
-            return self.current_state.init_message if not next_turn == "lock" else self.current_state.state_logic(self.current_state)
+            return self.current_state.init_message if not next_turn == "lock" else self.run_state(input)
 
         elif self.current_state.turn == "unknown":
-
             # Check if intent indicates a state else reset
             if current_intent not in STATE_DEFAULTS:
                 current_intent = "init"

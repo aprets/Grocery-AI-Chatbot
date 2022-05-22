@@ -85,7 +85,7 @@ def payment_details_logic(self: "DialogueState"):
 def confirm_order_logic(self: "DialogueState"):
     """Logic for the confirm order state"""
     if self.turn == "confirm":
-        return confirm_handler(self)
+        return "custom confirm"
     else:
         return f"{self.name}, {self.turn}"
 
