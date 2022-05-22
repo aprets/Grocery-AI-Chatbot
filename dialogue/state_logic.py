@@ -8,7 +8,7 @@ def init_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return "Confirm but this still shouldnt happen"
 
-    return "This shouldn't happen"
+    return "Please be clearer with your request"
 
 
 def check_availability_logic(self: "DialogueState"):

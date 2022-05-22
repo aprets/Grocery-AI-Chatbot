@@ -64,6 +64,9 @@ class DialogueManager():
             return self.current_state.init_message
 
         elif self.current_state.turn == "unknown":
+            if current_intent not in STATE_DEFAULTS:
+                current_intent = "init"
+
             # unless state already known
             new_state = DialogueState(
                 **STATE_DEFAULTS[current_intent], 
