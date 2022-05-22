@@ -12,15 +12,19 @@ def confirm_handler(self: "DialogueState"):
             missing_details.append(e)
     
     if missing_details:
-        return_string = "Missing: " + ", ".join([detail.capitalize() for detail in missing_details])
-    else:
-        return_string = "Please confirm the following:\n\n"
-        for k, v in self.state_entities.items():
-            return_string += f'The {k.lower()} you chose is {v}'
-            return_string += '\n'
-        return_string += '\n\nYou can say "Yes" or "No" to confirm.'
 
-    
+        return_string = "You are missing the following:\n"
+        for v in missing_details:
+            return_string += f'  - {v.title()}\n'
+        return_string += '\n Please try again with the correct options.'
+        self.turn = "negative"
+
+    else:
+        return_string = "Please confirm the following:\n"
+        for k, v in self.state_entities.items():
+            return_string += f'  - For {k.title()} you entered: {v}\n'
+        return_string += '\nYou can say "Yes" or "No" to confirm.'
+
     return return_string
 
 def init_logic(self: "DialogueState"):
@@ -45,7 +49,10 @@ def add_to_basket_logic(self: "DialogueState"):
         return "confirmed"
 def remove_from_basket_logic(self: "DialogueState"):
     """Logic for the remove from basket state"""
-    return 'Removing from basket'
+    if self.turn == "confirm":
+        return confirm_handler(self)
+    else:
+        return "confirmed"
 
 
 def address_details_logic(self: "DialogueState"):
