@@ -5,6 +5,7 @@ def init_logic(self):
 
     return "This shouldn't happen"
 
+
 def check_availability_logic(self):
     """Logic for the check availability state"""
     return 'Checking availability'
@@ -21,12 +22,18 @@ def remove_from_basket_logic(self):
 
 def address_details_logic(self):
     """Logic for the address details state"""
+    out_string = ""
+
     if self.confirm:
         for e in self.entity_mask:
-            self.state_entities[e]
-        return f'Setting address {self.state_entities["STREET"]}'
+            if e in self.state_entities:     
+                out_string += f'Found Entity "{e}": {self.state_entities[e]}\n'
+            else:
+                out_string += f'Did not find entity {e}\n'
+    else:
+        out_string += f'Is your address {self.state_entities["STREET"]}?'
 
-    return f'Is your address {self.state_entities["STREET"]}?'
+    return out_string
 
 
 def timeslot_details_logic(self):
