@@ -34,27 +34,29 @@ class DialogueManager():
             current_intent, pass_entities = self.user_turn(input)
 
             confirm = False
-            lock_state = False
             entities = {}
 
             if current_intent == "negative":
                 next_state_name = self.current_state.name
+                turn = "confirm"
 
             elif current_intent == "affirmative":
                 next_state_name = self.current_state.default_next_state
+                turn = "confirm"
 
             else: # Special case with known next state
                 next_state_name = current_intent
                 confirm = True
-                lock_state = True
+                turn = "lock"
                 entities = pass_entities
 
             new_state = DialogueState(
                 **STATE_DEFAULTS[next_state_name],
                 entities=entities,
             )
+
             new_state.confirm = confirm
-            new_state.lock_state = lock_state
+            new_state.turn = turn
             new_state.entities = entities
 
             # returns state init_message
@@ -65,15 +67,21 @@ class DialogueManager():
             current_intent, pass_entities = self.user_turn(input)
 
             # unless state already known
-            if not self.current_state.lock_state:
-                new_state = DialogueState(
-                    **STATE_DEFAULTS[current_intent], 
-                    entities = pass_entities)
-                self.update_state(new_state)
-            else:
-                self.current_state.state_entities = pass_entities
-                self.current_state.lock_state = False
-            
+            new_state = DialogueState(
+                **STATE_DEFAULTS[current_intent], 
+                entities = pass_entities)
+            self.update_state(new_state)
+
+            # Change to add_to_basket
+            # Do you want to add chicken to basket?
+            return self.current_state.state_logic(self.current_state)
+        
+        elif self.current_state.turn == "lock":
+            current_intent, pass_entities = self.user_turn(input)
+
+            self.current_state.state_entities = pass_entities
+            self.current_state.lock_state = False
+        
             # Change to add_to_basket
             # Do you want to add chicken to basket?
             return self.current_state.state_logic(self.current_state)
