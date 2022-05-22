@@ -38,6 +38,7 @@ class DialogueManager():
                 next_turn = "confirm"
 
             elif current_intent == "affirmative":
+                self.current_state.state_logic('confirmed')(self)
                 next_state_name = self.current_state.default_next_state
                 entities = {}
                 next_turn = "confirm"
@@ -60,6 +61,16 @@ class DialogueManager():
             # Set state and broadcast message
             self.update_state(new_state)
             return self.current_state.init_message if not next_turn == "lock" else self.run_state(input)
+
+        elif self.current_state.turn == "force_state":
+
+            # Move to detected state
+            new_state = DialogueState(
+                **STATE_DEFAULTS[self.current_state.forced_next_state], 
+                entities = pass_entities)
+            self.update_state(new_state)
+
+            return self.current_state.init_message
 
         elif self.current_state.turn == "unknown":
             # Check if intent indicates a state else reset

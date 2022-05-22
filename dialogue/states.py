@@ -9,6 +9,7 @@ class DialogueState():
         self.name: str = name
         self.uuid = uuid.uuid4()
         self.default_next_state = default_next_state
+        self.forced_next_state = None
         self.state_logic = state_logic
         self.init_message = init_message
         self.turn = turn
