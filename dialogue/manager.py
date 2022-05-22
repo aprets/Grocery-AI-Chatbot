@@ -24,6 +24,14 @@ class DialogueManager():
 
     def run_state(self, input=None):
         """ Handle the running of a state"""
+        current_intent, pass_entities = self.ingest(input)
+
+        # Handle unknown state
+        if current_intent == "unknown" and not self.current_state == "lock":
+            # Reset bot to start essentially
+            self.current_state.turn = "unknown"
+            current_intent = "init"
+
         if self.current_state.turn == "confirm":
             """
             User: Yes/No
@@ -31,7 +39,6 @@ class DialogueManager():
             show state message 
             """
 
-            current_intent, pass_entities = self.user_turn(input)
 
             # Select next state based on intent
             if current_intent == "negative":
@@ -64,8 +71,6 @@ class DialogueManager():
             return self.current_state.init_message
 
         elif self.current_state.turn == "unknown":
-            current_intent, pass_entities = self.user_turn(input)
-
             # unless state already known
             new_state = DialogueState(
                 **STATE_DEFAULTS[current_intent], 
@@ -77,7 +82,6 @@ class DialogueManager():
             return self.current_state.state_logic(self.current_state)
         
         elif self.current_state.turn == "lock":
-            current_intent, pass_entities = self.user_turn(input)
 
             self.current_state.state_entities = pass_entities
             self.current_state.lock_state = False
@@ -90,14 +94,9 @@ class DialogueManager():
             # Run custom turn logic
             return self.current_state.state_logic(self.current_state)
 
-    def bot_turn(self, start):
-        """ Run a bot turn"""
 
-        return self.current_state.state_logic(self.current_state, start=start)
-
-
-    def user_turn(self, message):
-        """ Process a user turn"""
+    def ingest(self, message):
+        """ Process a ingest user message"""
 
         for p in [",",".","-","?","!"]:
             message = message.replace(p, "")

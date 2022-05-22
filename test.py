@@ -43,7 +43,7 @@ print()
 
 print('Food test')
 dm = DialogueManager()
-print(dm.run_state("can i buy some bread"))
+print(dm.run_state("get bread"))
 print(dm.run_state("yes"))
 
 # dm.run_state()
