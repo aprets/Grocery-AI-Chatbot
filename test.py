@@ -1,4 +1,6 @@
 from dialogue.manager import DialogueManager
+print()
+print()
 
 print('EXPECTED')
 dm = DialogueManager()
@@ -8,6 +10,8 @@ print(dm.run_state("yes"))
 print(dm.run_state("deliver it at 3pm"))
 print(dm.run_state("yes"))
 
+print()
+print()
 print()
 print()
 
@@ -21,6 +25,8 @@ print(dm.run_state("yes"))
 
 print()
 print()
+print()
+print()
 
 print('USER WANTS SOMETHING ELSE')
 dm = DialogueManager()
@@ -28,6 +34,8 @@ print(dm.run_state("i am 67 avenue road"))
 print(dm.run_state("i would like to order chicken"))
 print(dm.run_state("yes"))
 
+print()
+print()
 print()
 print()
 
@@ -40,6 +48,8 @@ print(dm.run_state("yes"))
 
 print()
 print()
+print()
+print()
 
 print('Food test')
 dm = DialogueManager()
@@ -48,12 +58,16 @@ print(dm.run_state("yes"))
 
 print()
 print()
+print()
+print()
 
 print('No')
 dm = DialogueManager()
 print(dm.run_state("no"))
 print(dm.run_state("Salmon plz"))
 
+print()
+print()
 print()
 print()
 
