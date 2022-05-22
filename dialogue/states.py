@@ -61,7 +61,7 @@ STATE_DEFAULTS = {
         "name": "address_details",
         "default_next_state": "timeslot_details",
         "state_logic": address_details_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": ["STREET", "POSTCODE"],
         "init_message": "address init message"
 
     },

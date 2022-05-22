@@ -2,7 +2,7 @@ from dialogue.manager import DialogueManager
 
 print('EXPECTED')
 dm = DialogueManager()
-print(dm.run_state("i am 67 avenue road"))
+print(dm.run_state("i am 67 avenue road, Guildford, GU27XE"))
 print(dm.run_state("yes"))
 
 print(dm.run_state("deliver it at 3pm"))

@@ -90,6 +90,9 @@ class DialogueManager():
     def user_turn(self, message):
         """ Process a user turn"""
 
+        for p in [",",".","-","?","!"]:
+            message = message.replace(p, "")
+
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
 
