@@ -32,7 +32,6 @@ class DialogueManager():
             current_intent = "init"
 
         if self.current_state.turn == "confirm":
-
             # Select next state based on intent
             if current_intent == "negative":
                 next_state_name = self.current_state.name
