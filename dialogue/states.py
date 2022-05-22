@@ -76,13 +76,13 @@ STATE_DEFAULTS = {
         "name": "payment_details",
         "default_next_state": "confirm_order",
         "state_logic": payment_details_logic,
-        "entity_mask": [],
+        "entity_mask": ["NAME", "CARD_NUMBER", "CARD_CVC", "CARD_EXPIRY"],
         "init_message": "payment init message"
 
     },
     "confirm_order": {
         "name": "confirm_order",
-        "default_next_state": "finalise",
+        "default_next_state": "exit",
         "state_logic": confirm_order_logic,
         "entity_mask": [],
         "init_message": "confirm init message"
