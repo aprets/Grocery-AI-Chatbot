@@ -1,0 +1,67 @@
+EXPECTED
+Message: i am 67 avenue road, Intent address_details, Entities {'STREET': '67 avenue'}
+State address_details(e3bc55cf-5c23-4414-afc4-a0bc8b25ae11), confirm=True
+Setting address 67 avenue
+Message: yes, Intent affirmative, Entities {}
+State timeslot_details(04bee747-b6bb-4dfd-b5e0-d062151d08fa), confirm=False
+Timeslot init message
+Message: deliver it at 3pm, Intent timeslot_details, Entities {'STREET': '3pm'}
+State timeslot_details(a76f4988-700d-4db1-a1a2-31977ce12ea5), confirm=True
+Setting timeslot
+Message: yes, Intent affirmative, Entities {}
+State payment_details(c0f5a2bd-7a4e-4848-b8c0-76c3d432d561), confirm=False
+payment init message
+
+
+NOT CONFIRMED
+Message: i am 67 avenue road, Intent address_details, Entities {'STREET': '67 avenue'}
+State address_details(53d4fdcb-806b-4364-a425-6b2c5b6869a0), confirm=True
+Setting address 67 avenue
+Message: no, Intent negative, Entities {}
+State address_details(173fd730-af37-4bac-afbd-e63b766bdeef), confirm=False
+address init message
+Message: i would like to order chicken, Intent add_to_basket, Entities {}
+State add_to_basket(698632e5-b809-4fe3-9fd7-2e3ec6fcb97f), confirm=True
+Adding to basket
+Message: yes, Intent affirmative, Entities {}
+State address_details(932a9168-3e63-4c45-b143-96160676a42e), confirm=False
+address init message
+
+
+USER WANTS SOMETHING ELSE
+Message: i am 67 avenue road, Intent address_details, Entities {'STREET': '67 avenue'}
+State address_details(8dfbc239-5395-48a3-be11-ff419cc3eb3e), confirm=True
+Setting address 67 avenue
+Message: i would like to order chicken, Intent add_to_basket, Entities {}
+odd case
+State add_to_basket(5885a9cf-2569-4b62-b588-374aa66a6519), confirm=True
+add to basket init msg
+Message: yes, Intent affirmative, Entities {}
+State address_details(a6592307-5cb1-4c31-99fe-f943adc05a0e), confirm=False
+address init message
+
+
+USER WANTS SOMETHING ELSE NO INTENT
+Message: i am 67 avenue road, Intent address_details, Entities {'STREET': '67 avenue'}
+State address_details(501837b3-7d7c-4821-a6dc-b4f4693c6de7), confirm=True
+Setting address 67 avenue
+Message: add to basket, Intent add_to_basket, Entities {}
+odd case
+State add_to_basket(c6f647f9-2a91-431f-bbbe-b63d8e4a726a), confirm=True
+add to basket init msg
+Message: bread, milk , eggs, Intent add_to_basket, Entities {}
+odd case
+State add_to_basket(57104e11-7d38-4045-b0df-e299ea17e0d2), confirm=True
+add to basket init msg
+Message: yes, Intent affirmative, Entities {}
+State address_details(9a4616aa-b992-4399-b77d-cffd41cdaf5f), confirm=False
+address init message
+
+
+Food test
+Message: can i buy some bread, Intent check_availability, Entities {}
+State check_availability(e19fd518-bf91-4011-b525-25670c886603), confirm=True
+Checking availability
+Message: yes, Intent affirmative, Entities {}
+State add_to_basket(951f4886-2bf7-4988-83d0-21b096524f6e), confirm=False
+add to basket init msg

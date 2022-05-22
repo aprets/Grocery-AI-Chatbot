@@ -1,78 +1,55 @@
 # Logic for states
-def init_logic(self, start):
-    if start:
-        return 'start'
-    else:
-        return 'end'
+def init_logic(self):
+    if self.confirm:
+        return "Confirm but this still shouldnt happen"
 
+    return "This shouldn't happen"
 
-def check_availability_logic(self, start):
+def check_availability_logic(self):
     """Logic for the check availability state"""
-
-    if start:
-        print("start")
-    else:
-        print("end")
+    return 'Checking availability'
 
 
-def add_to_basket_logic(self, start):
+def add_to_basket_logic(self):
     """Logic for the add to basket state"""
+    return 'Adding to basket'
 
-    if start:
-        print("start")
-    else:
-        print("end")
-
-
-def remove_from_basket_logic(self, start):
+def remove_from_basket_logic(self):
     """Logic for the remove from basket state"""
-
-    if start:
-        print("start")
-    else:
-        print("end")
+    return 'Removing from basket'
 
 
-def address_details_logic(self, start):
+def address_details_logic(self):
     """Logic for the address details state"""
+    if self.confirm:
+        for e in self.entity_mask:
+            self.state_entities[e]
+        return f'Setting address {self.state_entities["STREET"]}'
 
-    if start:
-        print("start")
-    else:
-        print("end")
+    return f'Is your address {self.state_entities["STREET"]}?'
 
 
-def timeslot_details_logic(self, start):
+def timeslot_details_logic(self):
     """Logic for the timeslot request state"""
+    if self.confirm:
+        return f'Setting timeslot {self.state_entities["TIME"]}'
 
-    if start:
-        print("start")
-    else:
-        print("end")
-
+    return f'Would you like this timeslot: {self.state_entities["TIME"]}?'
     
-def payment_details_logic(self, start):
+    
+def payment_details_logic(self):
     """Logic for the payment details state"""
 
-    if start:
-        print("start")
-    else:
-        print("end")
+    return 'Setting payment details'
 
 
-def confirm_order_logic(self, start):
+def confirm_order_logic(self):
     """Logic for the confirm order state"""
 
-    if start:
-        print("start")
-    else:
-        print("end")
+    return 'Order confirmed'
 
 
 def exit_logic(self, start):
     """Logic for the exit state"""
 
-    if start:
-        print("start")
-    else:
-        print("end")
+    return 'Bye!'

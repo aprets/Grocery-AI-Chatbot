@@ -16,8 +16,8 @@ def start():
     global dm
     print(dm)
     dm = DialogueManager()
-    dm.start_dialogue()
-    return 'Started', 200
+
+    return dm.start_dialogue()
 
 @app.route('/47GMLwf7jfmesjwnQAKC/utter', methods = ['POST'])
 def utter():

@@ -12,81 +12,98 @@ class DialogueManager():
     """ Dialogue Manager that handles state"""
 
     def __init__(self):
-        self.state_defaults = STATE_DEFAULTS
-
         self.prior_states = deque()
         self.current_state = DialogueState(
-            **self.state_defaults["init"])
-
-    def start_dialogue(self):
-        """ Start the dialogue"""
-
-        self.run_state()
-        return
+            **STATE_DEFAULTS["init"])
+        self.finalised_values = {
+                                    "items": [],
+                                    "address": None,
+                                    "timeslot": None,
+                                    "payment": None
+                                }
 
     def run_state(self, input=None):
         """ Handle the running of a state"""
-        self.current_state.position = (self.current_state.position + 1) % 5
+        if not self.current_state.confirm:
+            current_intent, pass_entities = self.user_turn(input)
 
-        print(f'Sate {self.current_state.name}, Position {self.current_state.position}')
+            # unless state already known
+            if not self.current_state.name == self.current_state.lock_state:
+                new_state = DialogueState(
+                    **STATE_DEFAULTS[current_intent], 
+                    entities = pass_entities)
+                self.update_state(new_state)
+            else:
+                self.current_state.state_entities = pass_entities
+                self.current_state.response_intent = current_intent
+                self.current_state.lock_state = False
+            
+            # Change to add_to_basket
+            # Do you want to add chicken to basket?
+            return self.current_state.state_logic(self.current_state)
 
-        if self.current_state.position == 1:
-            return self.bot_turn(start=True)
+        else:
+            """
+            User: Yes/No
+            select new state
+            show state message 
+            """
 
-        elif self.current_state.position == 2:
-            self.user_turn(start=True, message=input)
-            return self.run_state()
+            current_intent, pass_entities = self.user_turn(input)
 
-        elif self.current_state.position == 3:
-            return self.bot_turn(start=False)
+            confirm = False
+            lock_state = False
+            entities = {}
 
-        elif self.current_state.position == 4:
-            if not self.current_state.skip_response:
-                self.user_turn(start=False, message=input)
-                return self.run_state()
+            if current_intent == "negative":
+                next_state_name = self.current_state.name
+
+            elif current_intent == "affirmative":
+                next_state_name = self.current_state.default_next_state
+
+            else: # Special case with known next state
+                next_state_name = current_intent
+                confirm = True
+                lock_state = True
+                entities = pass_entities
+                print("odd case")
+
+            new_state = DialogueState(
+                **STATE_DEFAULTS[next_state_name],
+                entities=entities,
+            )
+            new_state.confirm = confirm
+            new_state.lock_state = lock_state
+            new_state.entities = entities
+
+            # returns state init_message
+            self.update_state(new_state)
+            return self.current_state.init_message
+
 
     def bot_turn(self, start):
         """ Run a bot turn"""
 
         return self.current_state.state_logic(self.current_state, start=start)
 
-    def user_turn(self, start, message):
+
+    def user_turn(self, message):
         """ Process a user turn"""
 
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
 
-        print(f'Intent {turn_intent}, Entities {turn_entities}')
+        print(f'Message: {message}, Intent {turn_intent}, Entities {turn_entities}')
 
-        if start:
-            # Update state variables
-            self.current_state.response_intent = turn_intent
-            self.current_state.state_entities.update(turn_entities)
-        else:
-            if turn_intent == "negative":
-                new_state = DialogueState(
-                    self.state_defaults[self.current_state.name],
-                    entities=turn_entities,
-                )
-                self.update_state(new_state)
-            else:
-                if turn_intent == "affirmative":
-                    next_state_name = self.current_state.default_next_state
-                else:
-                    next_state_name = turn_intent
+        self.current_state.state_entities.update(turn_entities)
 
-                new_state = DialogueState(
-                    self.state_defaults[next_state_name],
-                    entities=turn_entities,
-                )
-                self.update_state(new_state)
-
-        return
+        return turn_intent, turn_entities
 
     def get_intent(self, message):
         """ Get intent from an utterance"""
 
         return predict_intent(message)
+
 
     def get_entities(self, message):
         """ Get entities from an utterance"""
@@ -96,9 +113,10 @@ class DialogueManager():
             ent_dict[ent.label_] = ent.text
         return ent_dict
 
+
     def update_state(self, new_state):
         """ Save the current dialogue state to history and enter a new state."""
+        print(f'State {new_state.name}({new_state.uuid}), confirm={new_state.confirm}')
 
         self.prior_states.append(self.current_state)
         self.current_state = new_state
-        return

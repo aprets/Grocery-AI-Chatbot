@@ -1,0 +1,10 @@
+INIT 
+--> init:end
+BOT: what you want
+
+
+USER: add chicken to basket
+--> add_to_baket:start
+BOT: confirm adding x to basket?
+USER: yes
+--> add_to_baket:end
