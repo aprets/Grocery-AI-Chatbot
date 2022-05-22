@@ -85,13 +85,13 @@ STATE_DEFAULTS = {
         "default_next_state": "finalise",
         "state_logic": confirm_order_logic,
         "entity_mask": [],
-        "init_message": "payment init message"
+        "init_message": "confirm init message"
     },
     "exit": {
         "name": "exit",
         "default_next_state": "init",
         "state_logic": exit_logic,
         "entity_mask": [],
-        "init_message": "payment init message"
+        "init_message": "exit init message"
     },
 }
