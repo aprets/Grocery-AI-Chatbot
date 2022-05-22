@@ -6,7 +6,6 @@ from .states import STATE_DEFAULTS, DialogueState
 from intent import predict_intent
 
 from ner import ner_spacy
-from product import menu
 
 class DialogueManager():
     """ Dialogue Manager that handles state"""
