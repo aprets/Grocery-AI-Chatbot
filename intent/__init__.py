@@ -25,6 +25,7 @@ def predict_intent(message):
     probabilities = model.predict_proba(X)[0]
     max_value = np.max(probabilities)
     max_index = np.where(probabilities == max_value)[0]
+    print(f'Detected Intent {le.inverse_transform(max_index)[0]} with probability of {max_value}')
     if (max_value <= 0.35):
         return 'unknown'
     return le.inverse_transform(max_index)[0]
