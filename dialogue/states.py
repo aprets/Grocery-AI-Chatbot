@@ -29,7 +29,7 @@ STATE_DEFAULTS = {
         "name": "init",
         "default_next_state": "add_to_basket",
         "state_logic": init_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": [],
         "init_message": "Welcome to Bainsurreys' - oops!",
         "confirm": False
 
@@ -38,7 +38,7 @@ STATE_DEFAULTS = {
         "name": "check_availability",
         "default_next_state": "add_to_basket",
         "state_logic": check_availability_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": ["PRODUCT"],
         "init_message": "Checking availablility",
 
     },
@@ -46,14 +46,14 @@ STATE_DEFAULTS = {
         "name": "add_to_basket",
         "default_next_state": "address_details",
         "state_logic": add_to_basket_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": ["PRODUCT"],
         "init_message": "add to basket init msg",
     },
     "remove_from_basket": {
         "name": "remove_from_basket",
         "default_next_state": "address_details",
         "state_logic": remove_from_basket_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": ["PRODUCT"],
         "init_message": "remove from basket msg"
 
     },
@@ -61,7 +61,7 @@ STATE_DEFAULTS = {
         "name": "address_details",
         "default_next_state": "timeslot_details",
         "state_logic": address_details_logic,
-        "entity_mask": ["STREET", "POSTCODE"],
+        "entity_mask": ["STREET", "CITY", "POSTCODE"],
         "init_message": "address init message"
 
     },
@@ -69,7 +69,7 @@ STATE_DEFAULTS = {
         "name": "timeslot_details",
         "default_next_state": "payment_details",
         "state_logic": timeslot_details_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": ["TIME"],
         "init_message": "Timeslot init message"
 
     },
@@ -77,7 +77,7 @@ STATE_DEFAULTS = {
         "name": "payment_details",
         "default_next_state": "confirm_order",
         "state_logic": payment_details_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": [],
         "init_message": "payment init message"
 
     },
@@ -85,14 +85,14 @@ STATE_DEFAULTS = {
         "name": "confirm_order",
         "default_next_state": "finalise",
         "state_logic": confirm_order_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": [],
         "init_message": "payment init message"
     },
     "exit": {
         "name": "exit",
         "default_next_state": "init",
         "state_logic": exit_logic,
-        "entity_mask": ["entity_one_name", "entity_two_name"],
+        "entity_mask": [],
         "init_message": "payment init message"
     },
 }
