@@ -15,6 +15,18 @@ print()
 print()
 print()
 
+print('ODD')
+dm = DialogueManager()
+print(dm.run_state("Bread, i am central avenue, Guildford, GU27XE, at 4pm"))
+print(dm.run_state("yes"))
+
+print(dm.run_state("deliver it at 3pm"))
+print(dm.run_state("yes"))
+
+print()
+print()
+print()
+print()
 print('NOT CONFIRMED')
 dm = DialogueManager()
 print(dm.run_state("i am 67 avenue road"))

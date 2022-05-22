@@ -96,10 +96,11 @@ class DialogueManager():
         for p in [",",".","-","?","!"]:
             message = message.replace(p, "")
 
-        print(f'    Message: {message}, Intent {turn_intent}, Entities {turn_entities}')
+        print(f'    Message: {message}')
 
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
+        print(f'    Entities: {turn_entities}')
 
         self.current_state.current_response = message
         self.current_state.state_entities.update(turn_entities)
