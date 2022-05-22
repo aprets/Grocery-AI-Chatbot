@@ -1,5 +1,6 @@
 import typing
 from product import menu
+from Levenshtein import distance
 
 class menu_item():
   def __init__(self, id, 
@@ -18,7 +19,6 @@ class menu_item():
     self.available = available
     self.imageUrl = imageUrl
 
-
     self.s_labels = None
     self.s_rating = None
     self.s_brand = None
@@ -32,17 +32,27 @@ class menu_item():
   def __str__(self):
     return ', '.join("%s: %s" % item for item in vars(self).items())
 
+
 class Menu():
     def __init__(self):
         self.items = menu
         self.attr_by_priority = ["name", "categoryName", "s_labels", "s_brand", ""]
 
-    def get_top_items(self, partial_name: str)-> typing.List[menu_item]:
+
+    def get_top_n_items(self, partial_name: str, n: int)-> typing.List[menu_item]:
         """ Return the top ten items in the menu which relate to the query"""
         items = []
         for c in self.attr_by_priority:
-            items += [i  for i in self.items if partial_name in getattr(i,c)]
-            if len(items) >= 10:
+            items += [i  for i in self.items if partial_name.lower() in getattr(i,c).lower()]
+            if len(items) >= n:
                 break
 
-        return sorted(items[:10], key=lambda i: i.s_rating, reverse=True)
+        return sorted(items[:n], key=lambda i: i.s_rating, reverse=True)
+
+    
+    def select_most_likely(self, item_list, partial_name):
+        return sorted(item_list, 
+                        key=lambda i: distance(
+                            i.name.lower(),partial_name.lower()) - \
+                            abs(len(item_list)-len(partial_name)), 
+                        reverse=True)[0]
