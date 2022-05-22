@@ -65,7 +65,7 @@ class DialogueManager():
             current_intent, pass_entities = self.user_turn(input)
 
             # unless state already known
-            if not self.current_state.name == self.current_state.lock_state:
+            if not self.current_state.lock_state:
                 new_state = DialogueState(
                     **STATE_DEFAULTS[current_intent], 
                     entities = pass_entities)
