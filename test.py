@@ -1,101 +1,36 @@
+import logging
 from dialogue.manager import DialogueManager
 
-print()
-print()
 
-print('EXPECTED')
-dm = DialogueManager()
-print(dm.run_state("i am central avenue, Guildford, GU27XE"))
-print(dm.run_state("yes"))
 
-print(dm.run_state("deliver it at 3pm"))
-print(dm.run_state("yes"))
+def run_test(*msgs, name):
+	dm = DialogueManager()
+	print()
+	print()
+	print()
+	print()
+	logging.debug(f'START TEST - {name}')
+	for msg in msgs:
+		print(dm.run_state(msg))
+	logging.debug(f'EMD TEST - {name}')
 
-print()
-print()
-print()
-print()
 
-print('ODD')
-dm = DialogueManager()
-print(dm.run_state("Bread, i am central avenue, Guildford, GU27XE, at 4pm"))
-print(dm.run_state("yes"))
 
-print(dm.run_state("deliver it at 3pm"))
-print(dm.run_state("yes"))
 
-print()
-print()
-print()
-print()
-print('NOT CONFIRMED')
-dm = DialogueManager()
-print(dm.run_state("i am 67 avenue road"))
-print(dm.run_state("no"))
+run_test("i am central avenue, Guildford, GU27XE", "yes", "deliver it at 3pm", "yes", name='BASIC')
 
-print(dm.run_state("i would like to order chicken"))
-print(dm.run_state("yes"))
+run_test("Bread, i am central avenue, Guildford, GU27XE, at 4pm", "yes", "deliver it at 3pm", "yes", name='ODD')
 
-print()
-print()
-print()
-print()
+run_test("i am 67 avenue road", "no", "i would like to order chicken", "yes", name='NOT CONFIRMED')
 
-print('USER WANTS SOMETHING ELSE')
-dm = DialogueManager()
-print(dm.run_state("i am 67 avenue road"))
-print(dm.run_state("i would like to order chicken"))
-print(dm.run_state("yes"))
+run_test("i am 67 avenue road", "i would like to order chicken", "yes", name='USER WANTS SOMETHING ELSE')
 
-print()
-print()
-print()
-print()
+run_test("i am 67 avenue road", "add to basket", "bread, milk , eggs", "yes", name='USER WANTS SOMETHING ELSE NO INTENT')
 
-print('USER WANTS SOMETHING ELSE NO INTENT')
-dm = DialogueManager()
-print(dm.run_state("i am 67 avenue road"))
-print(dm.run_state("add to basket"))
-print(dm.run_state("bread, milk , eggs"))
-print(dm.run_state("yes"))
+run_test("get bread", "yes", name='Food test')
 
-print()
-print()
-print()
-print()
+run_test("no", "Salmon plz", name='Start with no end with salmon')
 
-print('Food test')
-dm = DialogueManager()
-print(dm.run_state("get bread"))
-print(dm.run_state("yes"))
+run_test("deliver to 25 central avenue, Guildford, GU27XE", name='NER test')
 
-print()
-print()
-print()
-print()
-
-print('No')
-dm = DialogueManager()
-print(dm.run_state("no"))
-print(dm.run_state("Salmon plz"))
-
-print()
-print()
-print()
-print()
-
-print('No')
-dm = DialogueManager()
-print(dm.run_state("deliver to 25 central avenue, Guildford, GU27XE "))
-
-print()
-print()
-print()
-print()
-
-print('No')
-dm = DialogueManager()
-print(dm.run_state("deliver at 16:00"))
-print(dm.run_state("yes"))
-print(dm.run_state("My address is 15 Waltham Avenue Guildford GU27XE "))
-# dm.run_state()
+run_test("deliver at 16:00", "yes", "My address is 15 Waltham Avenue Guildford GU27XE", name='Mike test')

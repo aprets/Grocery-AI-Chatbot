@@ -1,4 +1,9 @@
 import typing
+
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
 from collections import deque
 
 from .states import STATE_DEFAULTS, DialogueState
@@ -38,7 +43,8 @@ class DialogueManager():
                 next_turn = "confirm"
 
             elif current_intent == "affirmative":
-                self.current_state.state_logic('confirmed')(self)
+                self.current_state.turn = 'confirmed'
+                self.current_state.state_logic(self.current_state)(self)
                 next_state_name = self.current_state.default_next_state
                 entities = {}
                 next_turn = "confirm"
