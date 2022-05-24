@@ -17,7 +17,7 @@ def start():
     print(dm)
     dm = DialogueManager()
 
-    return dm.start_dialogue()
+    return 'HI MIKE :)'
 
 @app.route('/47GMLwf7jfmesjwnQAKC/utter', methods = ['POST'])
 def utter():
