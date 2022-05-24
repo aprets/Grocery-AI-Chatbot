@@ -111,11 +111,11 @@ class DialogueManager():
         for p in [",",".","-","?","!"]:
             message = message.replace(p, "")
 
-        print(f'    Message: {message}')
+        logging.debug(f'USER MESSAGE: {message}')
 
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
-        print(f'    Entities: {turn_entities}')
+        logging.debug(f'Detected Entities: {turn_entities}')
 
         self.current_state.current_response = message
         self.current_state.state_entities.update(turn_entities)
@@ -139,7 +139,7 @@ class DialogueManager():
 
     def update_state(self, new_state):
         """ Save the current dialogue state to history and enter a new state."""
-        print(f'State {new_state.name}({new_state.uuid}), turn={new_state.turn}')
+        logging.debug(f'Current State: {new_state.name} Turn: {new_state.turn} ({new_state.uuid})')
 
         self.prior_states.append(self.current_state)
         self.current_state = new_state

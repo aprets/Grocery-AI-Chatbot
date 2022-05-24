@@ -8,11 +8,14 @@ def run_test(*msgs, name):
 	print()
 	print()
 	print()
-	print()
-	logging.debug(f'START TEST - {name}')
+	print('-' * 50, f'START TEST {name}', '-' * 50)
 	for msg in msgs:
-		print(dm.run_state(msg))
-	logging.debug(f'EMD TEST - {name}')
+		response = dm.run_state(msg)
+		print()
+		print(response)
+		print()
+	print('-' * 50, f'END TEST {name}', '-' * 50)
+
 
 
 
