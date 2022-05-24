@@ -107,6 +107,8 @@ def timeslot_details_logic(self: "DialogueState"):
     def confirmed_callback(manager: "DialogueManager"):
         manager.finalised_values['timeslot'] = self.state_entities['TIME']
 
+        logger.debug(f'Finalised Values: [timeslot: {manager.finalised_values["timeslot"]}]')
+
     if self.turn == "confirm":
         return confirm_handler(self)
     elif self.turn == "confirmed":
