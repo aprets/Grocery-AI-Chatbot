@@ -57,6 +57,7 @@ def add_to_basket_logic(self: "DialogueState"):
     """Logic for the add to basket state"""
     def confirmed_callback(manager: "DialogueManager") -> str:
         manager.finalised_values["items"].append(self.temp)
+        logger.debug(f'Finalised Items: [{[i.name for i in manager.finalised_values["items"]]}]')
         return f"Added {self.temp} to basket."
 
     def local_confirm_handler(manager: "DialogueManager") -> str:

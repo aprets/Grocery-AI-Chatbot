@@ -38,4 +38,6 @@ run_test("deliver to 25 central avenue, Guildford, GU27XE", name='NER test')
 
 run_test("deliver at 16:00", "yes", "My address is 15 Waltham Avenue Guildford GU27XE", name='Mike test')
 
-run_test("add to bread to basket", "0", "yes", name='Correct select for add_to_basket')
+run_test("add to bread to basket", "0", "yes","add to bread to basket", "0", "yes", name='Correct select for add_to_basket')
+
+run_test("add to bread to basket", "0", "no", name='Correct select for add_to_basket no')
