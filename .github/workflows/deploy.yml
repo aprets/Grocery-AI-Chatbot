@@ -25,8 +25,6 @@ jobs:
 
     - name: Authorize Docker push
       run: gcloud auth configure-docker
-  
-    - uses: satackey/action-docker-layer-caching@v0.0.11
 
     - name: Build and Push Container
       run: |-
