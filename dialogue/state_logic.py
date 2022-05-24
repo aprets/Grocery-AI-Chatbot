@@ -121,13 +121,16 @@ def payment_details_logic(self: "DialogueState"):
     """Logic for the payment details state"""
 
     def confirmed_callback(manager: "DialogueManager"):
-        manager.finalised_values['payment'] = {
+        finalised_payment =  manager.finalised_values['payment']
+        finalised_payment = {
             'NAME': self.state_entities['NAME'],
             # TODO: Assumes they exist
             'CARD_NUMBER': self.state_entities['CARD_NUMBER'],
             'CARD_CVC': self.state_entities['CARD_CVC'],
             'CARD_EXPIRY': self.state_entities['CARD_EXPIRY'],
         }
+
+        logger.debug(f'Finalised Values: [{", ".join([f"{v}: {finalised_payment[v]}" for v in self.entity_mask])}]')
 
     if self.turn == "confirm":
         return confirm_handler(self)
