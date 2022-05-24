@@ -43,7 +43,13 @@ def check_availability_logic(self: "DialogueState"):
 
 def add_to_basket_logic(self: "DialogueState"):
     """Logic for the add to basket state"""
-    search_query = self.state_entities['PRODUCT']
+    def confirmed_callback(manager: "DialogueManager"):
+        pass
+        # HOW TO GET ITEM FROM CHOICE ??? 
+
+    if self.turn == "confirmed":
+        return confirmed_callback
+
     return 'OPTIONS'
 
 
