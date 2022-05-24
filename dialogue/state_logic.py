@@ -39,7 +39,11 @@ def init_logic(self: "DialogueState"):
 
 def check_availability_logic(self: "DialogueState"):
     """Logic for the check availability state"""
-    return 'OPTIONS'
+    product = self.state_entities.get('PRODUCT')
+    if product:
+        return 'WE HAS THE FOLLOWING\n' + '\n'.join([item.name for item in menu.get_top_n_items(product)])
+    else:
+        return 'waaaa no product'
 
 
 def add_to_basket_logic(self: "DialogueState"):
