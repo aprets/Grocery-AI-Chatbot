@@ -69,7 +69,6 @@ class DialogueManager():
             return self.current_state.init_message if not next_turn == "lock" else self.run_state(input)
 
         elif self.current_state.turn == "force_state":
-
             # Move to detected state
             new_state = DialogueState(
                 **STATE_DEFAULTS[self.current_state.forced_next_state], 
@@ -99,7 +98,10 @@ class DialogueManager():
             self.current_state.turn = "confirm"
 
             return self.current_state.state_logic(self.current_state)
-        
+
+        elif self.current_state.turn == "select":
+                return self.current_state.state_logic(self.current_state)(self)
+
         else:
             # Run custom turn logic
             return self.current_state.state_logic(self.current_state)
@@ -132,7 +134,7 @@ class DialogueManager():
         """ Get entities from an utterance"""
 
         ent_dict = {}
-        for ent in ner_spacy(message).ents:
+        for ent in ner_spacy(message).ents[::-1]:
             ent_dict[ent.label_] = ent.text
         return ent_dict
 

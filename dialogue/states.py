@@ -48,6 +48,7 @@ STATE_DEFAULTS = {
         "state_logic": add_to_basket_logic,
         "entity_mask": ["PRODUCT"],
         "init_message": "add to basket init msg",
+        "turn": "select"
     },
     "remove_from_basket": {
         "name": "remove_from_basket",

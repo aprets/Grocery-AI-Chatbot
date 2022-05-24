@@ -1,6 +1,10 @@
 # Logic for states
 from asyncio.log import logger
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, overload
+
+from numpy import int32
+
+from product.product_helper import menu_item
 
 if TYPE_CHECKING:
     from dialogue.states import DialogueState
@@ -8,7 +12,10 @@ if TYPE_CHECKING:
 
 from product import menu
 
-def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following"):
+CLEARER_STRING = "Please be clearer with your request."
+SELECT_NUMBER_STRING = "Please enter a number."
+
+def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following") -> str:
     """ Logic to handle confirmation"""
     missing_details = []
     for e in self.entity_mask:
@@ -35,8 +42,7 @@ def init_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return "Confirm but this still shouldnt happen"
 
-    return "Please be clearer with your request"
-
+    return CLEARER_STRING
 
 def check_availability_logic(self: "DialogueState"):
     """Logic for the check availability state"""
@@ -49,18 +55,40 @@ def check_availability_logic(self: "DialogueState"):
 
 def add_to_basket_logic(self: "DialogueState"):
     """Logic for the add to basket state"""
-    def confirmed_callback(manager: "DialogueManager"):
-        pass
-        # HOW TO GET ITEM FROM CHOICE ??? 
+    def confirmed_callback(manager: "DialogueManager") -> str:
+        manager.finalised_values["items"].append(self.temp)
+        return f"Added {self.temp} to basket."
 
-    if self.turn == "confirmed":
+    def local_confirm_handler(manager: "DialogueManager") -> str:
+        try:
+            selection: menu_item = self.temp[int(self.current_response)]
+            self.temp = selection
+
+            return f"You have selected: {selection.name}"
+        except:
+            return SELECT_NUMBER_STRING
+
+    def select_item_callback(manager: "DialogueManager") -> str:
+        if "PRODUCT" in self.state_entities:
+            top = menu.get_top_n_items(self.state_entities["PRODUCT"])
+            suggest_str = '\n'.join([f"{k}. {v.name}" for k,v in enumerate(top)])
+
+            self.forced_next_state = self.name
+            self.turn = "confirm"
+            self.temp = top
+
+            return suggest_str
+        else:
+            self.forced_next_state = self.name
+            self.turn = "force_state"
+            return CLEARER_STRING
+
+    if self.turn == "select":
+        return select_item_callback
+    elif self.turn == "confirm":
+        return local_confirm_handler(self, "Please confirm adding the following from the basket")
+    elif self.turn == "confirmed":
         return confirmed_callback
-
-    product = self.state_entities.get('PRODUCT')
-    if product:
-        return '\n'.join([item.name for item in menu.get_top_n_items(product)])
-    else:
-        return 'waaaa no product'
 
 
 def remove_from_basket_logic(self: "DialogueState"):
@@ -72,8 +100,6 @@ def remove_from_basket_logic(self: "DialogueState"):
         manager.finalised_values['items'].remove(0)
 
     if self.turn == "confirm":
-        
-
         return confirm_handler(self, "Please confirm removing the following from the basket")
     elif self.turn == "confirmed":
         return confirmed_callback
@@ -84,7 +110,7 @@ def remove_from_basket_logic(self: "DialogueState"):
 def address_details_logic(self: "DialogueState"):
     """Logic for the address details state"""
 
-    def confirmed_callback(manager: "DialogueManager"):
+    def confirmed_callback(manager: "DialogueManager") -> str:
         finalised_address = manager.finalised_values['address']
         finalised_address = {
             'STREET': self.state_entities['STREET'],
@@ -92,7 +118,8 @@ def address_details_logic(self: "DialogueState"):
             'POSTCODE': self.state_entities['POSTCODE'],
         }
         logger.debug(f'Finalised Values: [{", ".join([f"{v}: {finalised_address[v]}" for v in self.entity_mask])}]')
-
+        return f"Address set as {''.join([finalised_address[v] for v in self.entity_mask])}"
+        
     if self.turn == "confirm":
         return confirm_handler(self)
     elif self.turn == "confirmed":
