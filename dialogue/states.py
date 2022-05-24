@@ -39,7 +39,7 @@ STATE_DEFAULTS = {
         "default_next_state": "add_to_basket",
         "state_logic": check_availability_logic,
         "entity_mask": ["PRODUCT"],
-        "init_message": "Checking availablility",
+        "init_message": "What product would you like to check availability for?",
         "turn": "confirm"
     },
     "add_to_basket": {
@@ -47,7 +47,7 @@ STATE_DEFAULTS = {
         "default_next_state": "address_details",
         "state_logic": add_to_basket_logic,
         "entity_mask": ["PRODUCT"],
-        "init_message": "add to basket init msg",
+        "init_message": "What product would you like to add to basket?",
         "turn": "select"
     },
     "remove_from_basket": {
@@ -55,7 +55,7 @@ STATE_DEFAULTS = {
         "default_next_state": "address_details",
         "state_logic": remove_from_basket_logic,
         "entity_mask": ["PRODUCT"],
-        "init_message": "remove from basket msg",
+        "init_message": "What product would you like to remove from basket?",
         "turn": "confirm"
     },
     "address_details": {
@@ -63,7 +63,7 @@ STATE_DEFAULTS = {
         "default_next_state": "timeslot_details",
         "state_logic": address_details_logic,
         "entity_mask": ["STREET", "CITY", "POSTCODE"],
-        "init_message": "address init message",
+        "init_message": "What address would you like the order to be delivered to?",
         "turn": "confirm"
     },
     "timeslot_details": {
@@ -71,7 +71,7 @@ STATE_DEFAULTS = {
         "default_next_state": "payment_details",
         "state_logic": timeslot_details_logic,
         "entity_mask": ["TIME"],
-        "init_message": "Timeslot init message",
+        "init_message": "What time tomorrow would you like the order delivered?",
         "turn": "confirm"
     },
     "payment_details": {
@@ -79,7 +79,7 @@ STATE_DEFAULTS = {
         "default_next_state": "confirm_order",
         "state_logic": payment_details_logic,
         "entity_mask": ["NAME", "CARD_NUMBER", "CARD_CVC", "CARD_EXPIRY"],
-        "init_message": "payment init message",
+        "init_message": "Please enter your Credit Card Number, CVC, Expiry Date and the Cardholder Name.",
         "turn": "confirm"
     },
     "confirm_order": {
@@ -87,7 +87,7 @@ STATE_DEFAULTS = {
         "default_next_state": "exit",
         "state_logic": confirm_order_logic,
         "entity_mask": [],
-        "init_message": "confirm init message",
+        "init_message": "????????????",
         "turn": "confirm"
     },
     "exit": {
@@ -95,7 +95,7 @@ STATE_DEFAULTS = {
         "default_next_state": "init",
         "state_logic": exit_logic,
         "entity_mask": [],
-        "init_message": "exit init message",
+        "init_message": "Restarting conversation",
         "turn": "confirm"
     },
 }
