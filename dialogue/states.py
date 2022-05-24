@@ -40,7 +40,7 @@ STATE_DEFAULTS = {
         "state_logic": check_availability_logic,
         "entity_mask": ["PRODUCT"],
         "init_message": "Checking availablility",
-
+        "turn": "confirm"
     },
     "add_to_basket": {
         "name": "add_to_basket",
@@ -55,45 +55,47 @@ STATE_DEFAULTS = {
         "default_next_state": "address_details",
         "state_logic": remove_from_basket_logic,
         "entity_mask": ["PRODUCT"],
-        "init_message": "remove from basket msg"
-
+        "init_message": "remove from basket msg",
+        "turn": "confirm"
     },
     "address_details": {
         "name": "address_details",
         "default_next_state": "timeslot_details",
         "state_logic": address_details_logic,
         "entity_mask": ["STREET", "CITY", "POSTCODE"],
-        "init_message": "address init message"
-
+        "init_message": "address init message",
+        "turn": "confirm"
     },
     "timeslot_details": {
         "name": "timeslot_details",
         "default_next_state": "payment_details",
         "state_logic": timeslot_details_logic,
         "entity_mask": ["TIME"],
-        "init_message": "Timeslot init message"
-
+        "init_message": "Timeslot init message",
+        "turn": "confirm"
     },
     "payment_details": {
         "name": "payment_details",
         "default_next_state": "confirm_order",
         "state_logic": payment_details_logic,
         "entity_mask": ["NAME", "CARD_NUMBER", "CARD_CVC", "CARD_EXPIRY"],
-        "init_message": "payment init message"
-
+        "init_message": "payment init message",
+        "turn": "confirm"
     },
     "confirm_order": {
         "name": "confirm_order",
         "default_next_state": "exit",
         "state_logic": confirm_order_logic,
         "entity_mask": [],
-        "init_message": "confirm init message"
+        "init_message": "confirm init message",
+        "turn": "confirm"
     },
     "exit": {
         "name": "exit",
         "default_next_state": "init",
         "state_logic": exit_logic,
         "entity_mask": [],
-        "init_message": "exit init message"
+        "init_message": "exit init message",
+        "turn": "confirm"
     },
 }
