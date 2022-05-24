@@ -74,7 +74,7 @@ def add_to_basket_logic(self: "DialogueState"):
             suggest_str = '\n'.join([f"{k}. {v.name}" for k,v in enumerate(top)])
 
             self.forced_next_state = self.name
-            self.turn = "confirm"
+            self.turn = "selected"
             self.temp = top
 
             return suggest_str
@@ -85,8 +85,8 @@ def add_to_basket_logic(self: "DialogueState"):
 
     if self.turn == "select":
         return select_item_callback
-    elif self.turn == "confirm":
-        return local_confirm_handler(self, "Please confirm adding the following from the basket")
+    elif self.turn == "selected":
+        return local_confirm_handler
     elif self.turn == "confirmed":
         return confirmed_callback
 

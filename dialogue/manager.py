@@ -88,7 +88,12 @@ class DialogueManager():
                 entities = pass_entities)
             self.update_state(new_state)
 
-            return self.current_state.state_logic(self.current_state)
+            logic_response = self.current_state.state_logic(self.current_state)
+            if callable(logic_response):
+                return logic_response(self)
+            else:
+                return logic_response
+
         
         elif self.current_state.turn == "lock":
             
@@ -99,7 +104,7 @@ class DialogueManager():
 
             return self.current_state.state_logic(self.current_state)
 
-        elif self.current_state.turn == "select":
+        elif self.current_state.turn == "select" or self.current_state.turn == "selected":
                 return self.current_state.state_logic(self.current_state)(self)
 
         else:
@@ -114,6 +119,7 @@ class DialogueManager():
             message = message.replace(p, "")
 
         logging.debug(f'USER MESSAGE: {message}')
+        logging.debug(f'Current State: {self.current_state.name} Turn: {self.current_state.turn} ({self.current_state.uuid})')
 
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
@@ -141,7 +147,7 @@ class DialogueManager():
 
     def update_state(self, new_state):
         """ Save the current dialogue state to history and enter a new state."""
-        logging.debug(f'Current State: {new_state.name} Turn: {new_state.turn} ({new_state.uuid})')
+        logging.debug(f'Switching to State: {new_state.name} Turn: {new_state.turn} ({new_state.uuid})')
 
         self.prior_states.append(self.current_state)
         self.current_state = new_state
