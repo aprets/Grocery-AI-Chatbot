@@ -63,8 +63,8 @@ def add_to_basket_logic(self: "DialogueState"):
         try:
             selection: menu_item = self.temp[int(self.current_response)]
             self.temp = selection
-
-            return f"You have selected: {selection.name}"
+            self.turn = "confirm"
+            return f"We think you have selected: {selection.name}, please confirm."
         except:
             return SELECT_NUMBER_STRING
 
