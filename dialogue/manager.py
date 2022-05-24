@@ -26,6 +26,12 @@ class DialogueManager():
                                     "payment": None
                                 }
 
+    def state_logic_wrapper(self, logic_response):
+            if callable(logic_response):
+                return logic_response(self)
+            else:
+                return logic_response
+
     def run_state(self, input=None):
         """ Handle the running of a state"""
         current_intent, pass_entities = self.ingest(input)
@@ -88,11 +94,7 @@ class DialogueManager():
                 entities = pass_entities)
             self.update_state(new_state)
 
-            logic_response = self.current_state.state_logic(self.current_state)
-            if callable(logic_response):
-                return logic_response(self)
-            else:
-                return logic_response
+            return self.state_logic_wrapper(self.current_state.state_logic(self.current_state))
 
         
         elif self.current_state.turn == "lock":
@@ -100,9 +102,9 @@ class DialogueManager():
             # State is locked in by previous message, 
             # ensure that it doesnt get switched and get entities
             self.current_state.state_entities = pass_entities
-            self.current_state.turn = "confirm"
+            self.current_state.turn = STATE_DEFAULTS[self.current_state.name]['turn']
 
-            return self.current_state.state_logic(self.current_state)
+            return self.state_logic_wrapper(self.current_state.state_logic(self.current_state))
 
         elif self.current_state.turn == "select" or self.current_state.turn == "selected":
                 return self.current_state.state_logic(self.current_state)(self)
