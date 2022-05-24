@@ -1,4 +1,5 @@
 # Logic for states
+from asyncio.log import logger
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -84,11 +85,13 @@ def address_details_logic(self: "DialogueState"):
     """Logic for the address details state"""
 
     def confirmed_callback(manager: "DialogueManager"):
-        manager.finalised_values['address'] = {
+        finalised_address = manager.finalised_values['address']
+        finalised_address = {
             'STREET': self.state_entities['STREET'],
             'CITY': self.state_entities['CITY'],
-            'STREET': self.state_entities['POSTCODE'],
+            'POSTCODE': self.state_entities['POSTCODE'],
         }
+        logger.debug(f'Finalised Values: [{", ".join([f"{v}: {finalised_address[v]}" for v in self.entity_mask])}]')
 
     if self.turn == "confirm":
         return confirm_handler(self)
