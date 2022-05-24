@@ -40,13 +40,13 @@ class Menu():
 
     def get_top_n_items(self, partial_name: str, n: int = 10)-> typing.List[menu_item]:
         """ Return the top ten items in the menu which relate to the query"""
-        items = []
+        items = set()
         for c in self.attr_by_priority:
-            items += [i for i in self.items if partial_name.lower() in str(getattr(i,c)).lower()]
+            items.update([i for i in self.items if partial_name.lower() in str(getattr(i,c)).lower()])
             if len(items) >= n:
                 break
 
-        return sorted(items[:n], key=lambda i: i.s_rating if i.s_rating else 0, reverse=True)
+        return sorted(list(items)[:n], key=lambda i: i.s_rating if i.s_rating else 0, reverse=True)
 
     
     def select_most_likely(self, item_list, partial_name):
