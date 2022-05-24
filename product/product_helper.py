@@ -27,6 +27,9 @@ class menu_item():
     self.s_ingredients = None
     self.s_nutrition = None
 
+    def _name(self):
+        return self.name.replace("Sainsbury's", "BainSurrey's")
+
 
   def __str__(self):
     return ', '.join("%s: %s" % item for item in vars(self).items())
