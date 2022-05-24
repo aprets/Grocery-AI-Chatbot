@@ -33,7 +33,6 @@ def confirm_handler(self: "DialogueState", confirm_message="Please confirm the f
         return_string = f"{confirm_message}:\n"
         for k, v in self.state_entities.items():
             return_string += f'  - For {k.title()} you entered: {v}\n'
-        return_string += '\nYou can say "Yes" or "No" to confirm.'
 
     return return_string
 
@@ -73,7 +72,7 @@ def add_to_basket_logic(self: "DialogueState"):
     def select_item_callback(manager: "DialogueManager") -> str:
         if "PRODUCT" in self.state_entities:
             top = menu.get_top_n_items(self.state_entities["PRODUCT"])
-            suggest_str = '\n'.join([f"{k}. {v.name}" for k,v in enumerate(top)])
+            suggest_str = "Please select an item:\n    " + '\n    '.join([f"{k}. {v.name}" for k,v in enumerate(top)])
 
             self.forced_next_state = self.name
             self.turn = "selected"

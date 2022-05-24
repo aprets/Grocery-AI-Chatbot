@@ -120,12 +120,13 @@ class DialogueManager():
         for p in [",",".","-","?","!"]:
             message = message.replace(p, "")
 
-        logging.debug(f'USER MESSAGE: {message}')
-        logging.debug(f'Current State: {self.current_state.name} Turn: {self.current_state.turn} ({self.current_state.uuid})')
-
         turn_intent = self.get_intent(message)
         turn_entities = self.get_entities(message)
-        logging.debug(f'Detected Entities: {turn_entities}')
+
+        if self.current_state.turn != "lock":
+            logging.debug(f'USER MESSAGE: {message}')
+            logging.debug(f'Current State: {self.current_state.name} Turn: {self.current_state.turn} ({self.current_state.uuid})')
+            logging.debug(f'Detected Entities: {turn_entities}')
 
         self.current_state.current_response = message
         self.current_state.state_entities.update(turn_entities)
