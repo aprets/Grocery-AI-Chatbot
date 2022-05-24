@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 from product import menu
 
 CLEARER_STRING = "Please be clearer with your request."
-SELECT_NUMBER_STRING = "Please enter a number."
 
 def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following") -> str:
     """ Logic to handle confirmation"""
@@ -45,11 +44,11 @@ def init_logic(self: "DialogueState"):
 
 def check_availability_logic(self: "DialogueState"):
     """Logic for the check availability state"""
-    product = self.state_entities.get('PRODUCT')
-    if product:
-        return 'WE HAS THE FOLLOWING\n' + '\n'.join([item.name for item in menu.get_top_n_items(product)])
+    if "PRODUCT" in self.state_entities:
+        top = menu.get_top_n_items(self.state_entities["PRODUCT"])
+        return f"For {self.state_entities['PRODUCT']} we have:\n    " + '\n    - '.join([f"{v.name}" for v in top])
     else:
-        return 'waaaa no product'
+        return CLEARER_STRING
 
 
 def add_to_basket_logic(self: "DialogueState"):
@@ -67,7 +66,8 @@ def add_to_basket_logic(self: "DialogueState"):
             self.turn = "confirm"
             return f"We think you have selected: {selection.name}, please confirm."
         except:
-            return SELECT_NUMBER_STRING
+            self.turn = "unknown"
+            return CLEARER_STRING
 
     def select_item_callback(manager: "DialogueManager") -> str:
         if "PRODUCT" in self.state_entities:
