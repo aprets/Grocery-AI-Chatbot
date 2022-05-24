@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from dialogue.states import DialogueState
     from dialogue.manager import DialogueManager
 
+from product import menu
 
 def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following"):
     """ Logic to handle confirmation"""
@@ -50,7 +51,11 @@ def add_to_basket_logic(self: "DialogueState"):
     if self.turn == "confirmed":
         return confirmed_callback
 
-    return 'OPTIONS'
+    product = self.state_entities.get('PRODUCT')
+    if product:
+        return '\n'.join([item.name for item in menu.get_top_n_items(product)])
+    else:
+        return 'waaaa no product'
 
 
 def remove_from_basket_logic(self: "DialogueState"):
