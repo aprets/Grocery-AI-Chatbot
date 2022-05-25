@@ -1,4 +1,5 @@
 # Logic for states
+import re
 from asyncio.log import logger
 from typing import TYPE_CHECKING, overload
 
@@ -11,6 +12,20 @@ if TYPE_CHECKING:
     from dialogue.manager import DialogueManager
 
 from product import menu
+
+
+card_number_regex = '((?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11}))'
+cvc_regex = '(?:\s|,|\.)([0-9]{3})(?:\s|,|\.)'
+expiry_regex = '((0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2}))'
+
+def try_find_regex(regex, string):
+    result = re.search(regex, string)
+    if result:
+        return result.group(1)
+    else:
+        return None
+
+
 
 CLEARER_STRING = "Please be clearer with your request."
 PRODUCT_MISSING = "We didn't identify any products matching that request, please try again."
@@ -202,30 +217,31 @@ def payment_details_logic(self: "DialogueState"):
             return "No name found, please try again."
 
     elif self.turn == "get_card_number":
-        # value = regex(self.current_response)
-        if value: # TODO
+        value = try_find_regex(card_number_regex, self.current_response)
+        if value:
             self.update_entities({"CARD_NUMBER": value})
             self.turn = "get_card_cvc"
             return "Please enter your CVC."
         else: 
-            return "No CVC found, please try again."
+            return "No Card Number found, please try again."
 
     elif self.turn == "get_card_cvc":
-        if "got_CVC": # TODO
-            self.update_entities({"CARD_CVC": self.current_response})
+        value = value = try_find_regex(cvc_regex, self.current_response)
+        if value:
+            self.update_entities({"CARD_CVC": value})
             self.turn = "get_card_expiry"
             return "Please enter your cards expiry date."
         else: 
             return "No CVC found, please try again."
 
     elif self.turn == "get_card_expiry":
-
-        if "got_CVC": # TODO
-            self.update_entities({"CARD_EXPIRY": self.current_response})
+        value = try_find_regex(expiry_regex, self.current_response)
+        if value:
+            self.update_entities({"CARD_EXPIRY": value})
             self.turn = "confirmed"
             return confirm_handler(self)
         else: 
-            return "No CVC found, please try again."
+            return "No Card Expiry Date, please try again."
 
     elif self.turn == "confirmed":
         self.forced_next_state = "confirm_order"
