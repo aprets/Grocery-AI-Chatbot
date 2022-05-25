@@ -96,12 +96,23 @@ def remove_from_basket_logic(self: "DialogueState"):
     """Logic for the remove from basket state"""
 
     def confirmed_callback(manager: "DialogueManager"):
-        search_query = self.state_entities['PRODUCT']
-        # TODO: Actually remove the correct item or decrement, make sure it exists
-        manager.finalised_values['items'].remove(0)
+        manager.finalised_values['items'].remove(self.temp)
+        return f"Removed {self.temp} from basket."
+
+
+    def local_confirm_handler(manager: "DialogueManager") -> str:
+        if manager.finalised_values["items"] and "PRODUCT" in self.state_entities:
+            item_to_remove = menu.select_most_likely(manager.finalised_values["items"])
+            self.temp = item_to_remove
+            self.turn = "confirm"
+            return f"Are you sure you want to remove {item_to_remove.name}?"
+        else:
+            self.turn = "unknown"
+            return CLEARER_STRING
+
 
     if self.turn == "confirm":
-        return confirm_handler(self, "Please confirm removing the following from the basket")
+        return local_confirm_handler
     elif self.turn == "confirmed":
         return confirmed_callback
     else:
