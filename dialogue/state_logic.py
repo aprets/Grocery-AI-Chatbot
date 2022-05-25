@@ -194,35 +194,34 @@ def payment_details_logic(self: "DialogueState"):
         
 
     if self.turn == "get_name":
-        self.update_entities({"NAME": self.current_response})
-
-        if "got_name": # TODO
+        if len(self.current_response) > 0: # TODO
+            self.update_entities({"NAME": self.current_response})
             self.turn = "get_card_number"
             return "Please enter your card number."
         else: 
             return "No name found, please try again."
 
     elif self.turn == "get_card_number":
-        self.update_entities({"CARD_NUMBER": self.current_response})
-
-        if "got_number": # TODO
+        # value = regex(self.current_response)
+        if value: # TODO
+            self.update_entities({"CARD_NUMBER": value})
             self.turn = "get_card_cvc"
             return "Please enter your CVC."
         else: 
             return "No CVC found, please try again."
 
     elif self.turn == "get_card_cvc":
-        self.update_entities({"CARD_CVC": self.current_response})
         if "got_CVC": # TODO
+            self.update_entities({"CARD_CVC": self.current_response})
             self.turn = "get_card_expiry"
             return "Please enter your cards expiry date."
         else: 
             return "No CVC found, please try again."
 
     elif self.turn == "get_card_expiry":
-        self.update_entities({"CARD_EXPIRY": self.current_response})
 
         if "got_CVC": # TODO
+            self.update_entities({"CARD_EXPIRY": self.current_response})
             self.turn = "confirmed"
             return confirm_handler(self)
         else: 
