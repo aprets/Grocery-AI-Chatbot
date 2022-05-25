@@ -97,7 +97,7 @@ def remove_from_basket_logic(self: "DialogueState"):
 
     def confirmed_callback(manager: "DialogueManager"):
         manager.finalised_values['items'].remove(self.temp)
-        logger.debug(f'Finalised Items: [{[i.name for i in manager.finalised_values["items"]]}]')
+        logger.debug(f'Finalised Items: {[i.name for i in manager.finalised_values["items"]]}')
         return f"Removed {self.temp} from basket."
 
 
@@ -130,7 +130,7 @@ def address_details_logic(self: "DialogueState"):
             'CITY': self.state_entities['CITY'],
             'POSTCODE': self.state_entities['POSTCODE'],
         }
-        logger.debug(f'Finalised Values: [{", ".join([f"{v}: {finalised_address[v]}" for v in self.entity_mask])}]')
+        logger.debug(f'Finalised Values: {", ".join([f"{v}: {finalised_address[v]}" for v in self.entity_mask])}')
         return f"Address set as {''.join([finalised_address[v] for v in self.entity_mask])}"
         
     if self.turn == "confirm":
