@@ -4,6 +4,7 @@ from asyncio.log import logger
 from typing import TYPE_CHECKING, overload
 
 from numpy import int32
+from sympy import EX
 
 from product.product_helper import menu_item
 
@@ -13,9 +14,13 @@ if TYPE_CHECKING:
 
 from product import menu
 
-card_number_regex = '((?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11}))'
-cvc_regex = '([0-9]{3})'
-expiry_regex = '((0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2}))'
+CARD_NUMBER_REGEX = '((?:4[0-9]{12}(?:[0-9]{3})?|[25][1-7][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11}))'
+CVC_REGEX = '([0-9]{3})'
+EXPIRY_REGEX = '((0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2}))'
+
+CLEARER_STRING = "Please be clearer with your request."
+PRODUCT_MISSING = "We didn't identify any products matching that request, please try again."
+END_ERROR = "This shouldn't have happened, please contact support"
 
 def try_find_regex(regex, string):
     result = re.search(regex, string)
@@ -23,10 +28,6 @@ def try_find_regex(regex, string):
         return result.group(1)
     else:
         return None
-
-CLEARER_STRING = "Please be clearer with your request."
-PRODUCT_MISSING = "We didn't identify any products matching that request, please try again."
-END_ERROR = "This shouldn't have happened, please contact support"
 
 def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following") -> str:
     """ Logic to handle confirmation"""
@@ -214,7 +215,7 @@ def payment_details_logic(self: "DialogueState"):
             return "No name found, please try again."
 
     elif self.turn == "get_card_number":
-        value = try_find_regex(card_number_regex, self.current_response)
+        value = try_find_regex(CARD_NUMBER_REGEX, self.current_response)
         if value:
             self.update_entities({"CARD_NUMBER": value})
             self.turn = "get_card_cvc"
@@ -223,7 +224,7 @@ def payment_details_logic(self: "DialogueState"):
             return "No Card Number found, please try again."
 
     elif self.turn == "get_card_cvc":
-        value = value = try_find_regex(cvc_regex, self.current_response)
+        value = value = try_find_regex(CVC_REGEX, self.current_response)
         if value:
             self.update_entities({"CARD_CVC": value})
             self.turn = "get_card_expiry"
@@ -232,7 +233,7 @@ def payment_details_logic(self: "DialogueState"):
             return "No CVC found, please try again."
 
     elif self.turn == "get_card_expiry":
-        value = try_find_regex(expiry_regex, self.current_response)
+        value = try_find_regex(EXPIRY_REGEX, self.current_response)
         if value:
             self.update_entities({"CARD_EXPIRY": value})
             self.turn = "confirmed"
