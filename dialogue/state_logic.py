@@ -3,6 +3,7 @@ from asyncio.log import logger
 from typing import TYPE_CHECKING, overload
 
 from numpy import int32
+from dialogue.states import STATE_DEFAULTS
 
 from product.product_helper import menu_item
 
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
 from product import menu
 
 CLEARER_STRING = "Please be clearer with your request."
+PRODUCT_MISSING = "We didn't identify any products matching that request, please try again."
 
 def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following") -> str:
     """ Logic to handle confirmation"""
@@ -48,7 +50,7 @@ def check_availability_logic(self: "DialogueState"):
         top = menu.get_top_n_items(self.state_entities["PRODUCT"])
         return f"For {self.state_entities['PRODUCT']} we have:\n    " + '\n    - '.join([f"{v.name}" for v in top])
     else:
-        return CLEARER_STRING
+        return PRODUCT_MISSING
 
 
 def add_to_basket_logic(self: "DialogueState"):
@@ -82,7 +84,7 @@ def add_to_basket_logic(self: "DialogueState"):
         else:
             self.forced_next_state = self.name
             self.turn = "force_state"
-            return CLEARER_STRING
+            return PRODUCT_MISSING
 
     if self.turn == "select" or self.turn == "lock":
         return select_item_callback
@@ -102,11 +104,15 @@ def remove_from_basket_logic(self: "DialogueState"):
 
 
     def local_confirm_handler(manager: "DialogueManager") -> str:
-        if manager.finalised_values["items"] and "PRODUCT" in self.state_entities:
-            item_to_remove = menu.select_most_likely(manager.finalised_values["items"],self.state_entities["PRODUCT"])
-            self.temp = item_to_remove
-            self.turn = "confirm"
-            return f"Are you sure you want to remove {item_to_remove.name}?"
+        if manager.finalised_values["items"]:
+            if "PRODUCT" in self.state_entities:
+                item_to_remove = menu.select_most_likely(manager.finalised_values["items"],self.state_entities["PRODUCT"])
+                self.temp = item_to_remove
+                self.turn = "confirm"
+                return f"Are you sure you want to remove {item_to_remove.name}?"
+            else:
+                self.turn = "unknown"
+                return PRODUCT_MISSING          
         else:
             self.turn = "unknown"
             return CLEARER_STRING
@@ -182,8 +188,46 @@ def payment_details_logic(self: "DialogueState"):
 
 def confirm_order_logic(self: "DialogueState"):
     """Logic for the confirm order state"""
+
+    def order_confirm_callback(manager: "DialogueManager"):
+        if not manager.finalised_values["items"] == []:
+
+            if not manager.finalised_values["address"]== None and \
+            not manager.finalised_values["address"]["STREET"] and\
+            not manager.finalised_values["address"]["CITY"] and\
+            not manager.finalised_values["address"]["POSTCODE"]:
+
+                if manager.finalised_values["timeslot"] == None:
+
+                    if not manager.finalised_values["payment"]== None and \
+                    not manager.finalised_values["payment"]["CARD_NUMBER"] and\
+                    not manager.finalised_values["payment"]["CARD_CVC"] and\
+                    not manager.finalised_values["payment"]["CARD_EXPIRY"]:
+
+                        return "Order processed succesfully! Thanks : D"
+                    else:
+                        self.forced_next_state = "payment_details"
+                        self.turn = "force_state_no_init"
+                        return STATE_DEFAULTS["payment_details"]["init_message"]
+
+                else:
+                    self.forced_next_state = "timeslot_details"
+                    self.turn = "force_state_no_init"
+                    return STATE_DEFAULTS["payment_details"]["timeslot_details"]
+
+            else:
+                self.forced_next_state = "address_details"
+                self.turn = "force_state_no_init"
+                return STATE_DEFAULTS["payment_details"]["address_details"]
+
+        else:
+            self.forced_next_state = "add_to_basket"
+            self.turn = "force_state_no_init"
+            return STATE_DEFAULTS["payment_details"]["add_to_basket"]
+
+
     if self.turn == "confirm":
-        return "custom confirm"
+        return order_confirm_callback(self)
     else:
         return f"{self.name}, {self.turn}"
 

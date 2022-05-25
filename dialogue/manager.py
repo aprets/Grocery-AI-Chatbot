@@ -83,6 +83,15 @@ class DialogueManager():
 
             return self.current_state.init_message
 
+        elif self.current_state.turn == "force_state_no_init":
+            # Move to detected state
+            new_state = DialogueState(
+                **STATE_DEFAULTS[self.current_state.forced_next_state], 
+                entities = pass_entities)
+            self.update_state(new_state)
+
+            return self.state_logic_wrapper(self.current_state.state_logic(self.current_state))
+
         elif self.current_state.turn == "unknown":
             # Check if intent indicates a state else reset
             if current_intent not in STATE_DEFAULTS:

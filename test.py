@@ -44,4 +44,4 @@ run_test("add to bread to basket", "0", "no", name='Correct select for add_to_ba
 
 run_test("add to bread to basket", "0", "yes", "remove bread from basket", "yes", name='Correct select for add_to_basket no')
 
-run_test("add to bread to basket", "0", "yes","add to bread to basket", "0", "yes","remove bread from basket", "yes", name='Correct select for add_to_basket')
+run_test("remove bread from basket", "yes", name='Correct select for add_to_basket')
