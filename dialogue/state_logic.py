@@ -121,7 +121,7 @@ def remove_from_basket_logic(self: "DialogueState"):
     def confirmed_callback(manager: "DialogueManager"):
         manager.finalised_values['items'].remove(self.temp)
         logger.debug(f'Finalised Items: {[i.name for i in manager.finalised_values["items"]]}')
-        return f"Removed {self.temp} from basket."
+        return f"Removed {self.temp.name} from basket."
 
 
     def local_confirm_handler(manager: "DialogueManager") -> str:
