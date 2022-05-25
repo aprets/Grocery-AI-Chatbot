@@ -102,7 +102,7 @@ def remove_from_basket_logic(self: "DialogueState"):
 
     def local_confirm_handler(manager: "DialogueManager") -> str:
         if manager.finalised_values["items"] and "PRODUCT" in self.state_entities:
-            item_to_remove = menu.select_most_likely(manager.finalised_values["items"])
+            item_to_remove = menu.select_most_likely(manager.finalised_values["items"],self.state_entities["PRODUCT"])
             self.temp = item_to_remove
             self.turn = "confirm"
             return f"Are you sure you want to remove {item_to_remove.name}?"
