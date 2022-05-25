@@ -22,9 +22,9 @@ class DialogueManager():
             **STATE_DEFAULTS["init"])
         self.finalised_values = {
                                     "items": [],
-                                    "address": None,
+                                    "address": {},
                                     "timeslot": None,
-                                    "payment": None
+                                    "payment": {}
                                 }
 
     def state_logic_wrapper(self, logic_response):
@@ -36,6 +36,7 @@ class DialogueManager():
     def run_state(self, input=None):
         """ Handle the running of a state"""
         current_intent, pass_entities = self.ingest(input)
+        inline_message = ""
         # Handle unknown state
         if current_intent == "unknown" and not self.current_state == "lock":
             # Reset bot to start essentially
@@ -47,14 +48,14 @@ class DialogueManager():
             if current_intent == "negative":
                 next_state_name = self.current_state.name
                 entities = {}
-                next_turn = "confirm"
+                next_turn = STATE_DEFAULTS[self.current_state.name]['turn']
 
             elif current_intent == "affirmative":
                 self.current_state.turn = 'confirmed'
-                self.current_state.state_logic(self.current_state)(self)
+                inline_message = self.state_logic_wrapper(self.current_state.state_logic(self.current_state)) + "\n"
                 next_state_name = self.current_state.default_next_state
                 entities = {}
-                next_turn = "confirm"
+                next_turn = STATE_DEFAULTS[self.current_state.default_next_state]['turn']
 
             else: # Special case with known next state
                 next_state_name = current_intent
@@ -73,7 +74,8 @@ class DialogueManager():
 
             # Set state and broadcast message
             self.update_state(new_state)
-            return self.current_state.init_message if not next_turn == "lock" else self.run_state(input)
+            
+            return inline_message+self.current_state.init_message if not next_turn == "lock" else self.run_state(input)
 
         elif self.current_state.turn == "force_state":
             # Move to detected state
@@ -116,12 +118,9 @@ class DialogueManager():
 
             return self.state_logic_wrapper(self.current_state.state_logic(self.current_state))
 
-        elif self.current_state.turn == "select" or self.current_state.turn == "selected":
-                return self.current_state.state_logic(self.current_state)(self)
-
         else:
             # Run custom turn logic
-            return self.current_state.state_logic(self.current_state)
+            return self.state_logic_wrapper(self.current_state.state_logic(self.current_state))
 
 
     def ingest(self, message):

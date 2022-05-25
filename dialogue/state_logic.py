@@ -3,7 +3,6 @@ from asyncio.log import logger
 from typing import TYPE_CHECKING, overload
 
 from numpy import int32
-from dialogue.state_defaults import STATE_DEFAULTS
 
 from product.product_helper import menu_item
 
@@ -59,9 +58,8 @@ def add_to_basket_logic(self: "DialogueState"):
     """Logic for the add to basket state"""
     def confirmed_callback(manager: "DialogueManager") -> str:
         manager.finalised_values["items"].append(self.temp)
-        self.temp = None
         logger.debug(f'Finalised Items: [{[i.name for i in manager.finalised_values["items"]]}]')
-        return f"Added {self.temp} to basket."
+        return f"Added {self.temp.name} to basket."
 
     def local_confirm_handler(manager: "DialogueManager") -> str:
         try:
@@ -141,14 +139,16 @@ def address_details_logic(self: "DialogueState"):
     """Logic for the address details state"""
 
     def confirmed_callback(manager: "DialogueManager") -> str:
+        print("in confirmd")
         finalised_address = manager.finalised_values['address']
-        finalised_address = {
+        finalised_address.update({
             'STREET': self.state_entities['STREET'],
             'CITY': self.state_entities['CITY'],
             'POSTCODE': self.state_entities['POSTCODE'],
-        }
-        logger.debug(f'Finalised Values: {", ".join([f"{v}: {finalised_address[v]}" for v in self.entity_mask])}')
-        return f"Address set as {''.join([finalised_address[v] for v in self.entity_mask])}"
+        })
+
+        logger.debug(f'Finalised Address: {", ".join([f"{v}: {finalised_address[v]}" for v in self.entity_mask])}')
+        return f"Address set as {' '.join([finalised_address[v] for v in self.entity_mask])}"
         
     if self.turn == "confirm":
         return confirm_handler(self)
@@ -165,7 +165,8 @@ def timeslot_details_logic(self: "DialogueState"):
     def confirmed_callback(manager: "DialogueManager"):
         manager.finalised_values['timeslot'] = self.state_entities['TIME']
 
-        logger.debug(f'Finalised Values: [timeslot: {manager.finalised_values["timeslot"]}]')
+        logger.debug(f'Finalised Timeslot: {manager.finalised_values["timeslot"]}]')
+        return f"Timeslot set as {manager.finalised_values['timeslot']}."
 
     if self.turn == "confirm":
         return confirm_handler(self)
@@ -181,19 +182,55 @@ def payment_details_logic(self: "DialogueState"):
 
     def confirmed_callback(manager: "DialogueManager"):
         finalised_payment =  manager.finalised_values['payment']
-        finalised_payment = {
+        finalised_payment.update({
             'NAME': self.state_entities['NAME'],
-            # TODO: Assumes they exist
             'CARD_NUMBER': self.state_entities['CARD_NUMBER'],
             'CARD_CVC': self.state_entities['CARD_CVC'],
             'CARD_EXPIRY': self.state_entities['CARD_EXPIRY'],
-        }
+        })
 
-        logger.debug(f'Finalised Values: [{", ".join([f"{v}: {finalised_payment[v]}" for v in self.entity_mask])}]')
+        logger.debug(f'Finalised Payment Details: [{", ".join([f"{v}: {finalised_payment[v]}" for v in self.entity_mask])}]')
+        return f"Payment details set as {', '.join([finalised_payment[v] for v in self.entity_mask])}\nConfirm order?"
+        
 
-    if self.turn == "confirm":
-        return confirm_handler(self)
+    if self.turn == "get_name":
+        self.update_entities({"NAME": self.current_response})
+
+        if "got_name": # TODO
+            self.turn = "get_card_number"
+            return "Please enter your card number."
+        else: 
+            return "No name found, please try again."
+
+    elif self.turn == "get_card_number":
+        self.update_entities({"CARD_NUMBER": self.current_response})
+
+        if "got_number": # TODO
+            self.turn = "get_card_cvc"
+            return "Please enter your CVC."
+        else: 
+            return "No CVC found, please try again."
+
+    elif self.turn == "get_card_cvc":
+        self.update_entities({"CARD_CVC": self.current_response})
+        if "got_CVC": # TODO
+            self.turn = "get_card_expiry"
+            return "Please enter your cards expiry date."
+        else: 
+            return "No CVC found, please try again."
+
+    elif self.turn == "get_card_expiry":
+        self.update_entities({"CARD_EXPIRY": self.current_response})
+
+        if "got_CVC": # TODO
+            self.turn = "confirmed"
+            return confirm_handler(self)
+        else: 
+            return "No CVC found, please try again."
+
     elif self.turn == "confirmed":
+        self.forced_next_state = "confirm_order"
+        self.turn = "force_state_no_init"
         return confirmed_callback
     else:
         logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
@@ -204,44 +241,48 @@ def confirm_order_logic(self: "DialogueState"):
     """Logic for the confirm order state"""
 
     def order_confirm_callback(manager: "DialogueManager"):
-        if not manager.finalised_values["items"] == []:
+        if manager.finalised_values["items"]:
 
-            if not manager.finalised_values["address"]== None and \
-            not manager.finalised_values["address"]["STREET"] and\
-            not manager.finalised_values["address"]["CITY"] and\
-            not manager.finalised_values["address"]["POSTCODE"]:
+            if manager.finalised_values["address"] and \
+            manager.finalised_values["address"]["STREET"] and\
+            manager.finalised_values["address"]["CITY"] and\
+            manager.finalised_values["address"]["POSTCODE"]:
 
-                if manager.finalised_values["timeslot"] == None:
+                if manager.finalised_values["timeslot"]:
 
-                    if not manager.finalised_values["payment"]== None and \
-                    not manager.finalised_values["payment"]["CARD_NUMBER"] and\
-                    not manager.finalised_values["payment"]["CARD_CVC"] and\
-                    not manager.finalised_values["payment"]["CARD_EXPIRY"]:
+                    if manager.finalised_values["payment"] and \
+                    manager.finalised_values["payment"]["CARD_NUMBER"] and\
+                    manager.finalised_values["payment"]["CARD_CVC"] and\
+                    manager.finalised_values["payment"]["CARD_EXPIRY"]:
                         self.forced_next_state = "exit"
                         self.turn = "force_state"
                         return "Order processed succesfully!"
                     else:
                         self.forced_next_state = "payment_details"
-                        self.turn = "force_state_no_init"
-                        return STATE_DEFAULTS["payment_details"]["init_message"]
+                        self.turn = "force_state"
+                        return "Please enter your card details first."
 
                 else:
                     self.forced_next_state = "timeslot_details"
                     self.turn = "force_state_no_init"
-                    return STATE_DEFAULTS["payment_details"]["timeslot_details"]
+                    return "Please select a timeslot first."
 
             else:
                 self.forced_next_state = "address_details"
                 self.turn = "force_state_no_init"
-                return STATE_DEFAULTS["payment_details"]["address_details"]
+                return "Please ensure that you have filled in your address details first."
 
         else:
             self.forced_next_state = "add_to_basket"
             self.turn = "force_state_no_init"
-            return STATE_DEFAULTS["payment_details"]["add_to_basket"]
+            return "Please add something to your basket first."
 
     if self.turn == "confirm":
-        return order_confirm_callback(self)
+        return order_confirm_callback
+
+    elif self.turn == "confirmed":
+        return 
+
     else:
         logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
         return END_ERROR

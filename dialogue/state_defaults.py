@@ -5,7 +5,6 @@ STATE_DEFAULTS = {
         "entity_mask": [],
         "init_message": "Welcome to Bainsurreys' - oops!",
         "turn": "unknown"
-
     },
     "check_availability": {
         "name": "check_availability",
@@ -46,14 +45,14 @@ STATE_DEFAULTS = {
         "name": "payment_details",
         "default_next_state": "confirm_order",
         "entity_mask": ["NAME", "CARD_NUMBER", "CARD_CVC", "CARD_EXPIRY"],
-        "init_message": "Please enter your Credit Card Number, CVC, Expiry Date and the Cardholder Name.",
-        "turn": "confirm"
+        "init_message": "Gathering payment details. Please enter your name.",
+        "turn": "get_name"
     },
     "confirm_order": {
         "name": "confirm_order",
         "default_next_state": "exit",
         "entity_mask": [],
-        "init_message": "????????????",
+        "init_message": "Do you want to confirm your order?",
         "turn": "confirm"
     },
     "exit": {
