@@ -206,7 +206,7 @@ def payment_details_logic(self: "DialogueState"):
         
 
     if self.turn == "get_name":
-        if len(self.current_response) > 0: # TODO
+        if self.current_response:
             self.update_entities({"NAME": self.current_response})
             self.turn = "get_card_number"
             return "Please enter your card number."
