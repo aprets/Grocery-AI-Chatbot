@@ -3,9 +3,6 @@ import re
 from asyncio.log import logger
 from typing import TYPE_CHECKING, overload
 
-from numpy import int32
-from sympy import EX
-
 from product.product_helper import menu_item
 
 if TYPE_CHECKING:
