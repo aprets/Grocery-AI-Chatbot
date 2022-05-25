@@ -15,6 +15,7 @@ from product import menu
 
 CLEARER_STRING = "Please be clearer with your request."
 PRODUCT_MISSING = "We didn't identify any products matching that request, please try again."
+END_ERROR = "This shouldn't have happened, please contact support"
 
 def confirm_handler(self: "DialogueState", confirm_message="Please confirm the following") -> str:
     """ Logic to handle confirmation"""
@@ -41,8 +42,9 @@ def confirm_handler(self: "DialogueState", confirm_message="Please confirm the f
 def init_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return "Confirm but this still shouldnt happen"
-
-    return CLEARER_STRING
+    else:
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 def check_availability_logic(self: "DialogueState"):
     """Logic for the check availability state"""
@@ -71,6 +73,7 @@ def add_to_basket_logic(self: "DialogueState"):
             self.turn = "unknown"
             return CLEARER_STRING
 
+
     def select_item_callback(manager: "DialogueManager") -> str:
         if "PRODUCT" in self.state_entities:
             top = menu.get_top_n_items(self.state_entities["PRODUCT"])
@@ -92,6 +95,9 @@ def add_to_basket_logic(self: "DialogueState"):
         return local_confirm_handler
     elif self.turn == "confirmed":
         return confirmed_callback
+    else:
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 
 def remove_from_basket_logic(self: "DialogueState"):
@@ -123,7 +129,8 @@ def remove_from_basket_logic(self: "DialogueState"):
     elif self.turn == "confirmed":
         return confirmed_callback
     else:
-        return f"{self.name}, {self.turn}"
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 
 def address_details_logic(self: "DialogueState"):
@@ -144,7 +151,8 @@ def address_details_logic(self: "DialogueState"):
     elif self.turn == "confirmed":
         return confirmed_callback
     else:
-        return f"{self.name}, {self.turn}"
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 
 def timeslot_details_logic(self: "DialogueState"):
@@ -160,7 +168,8 @@ def timeslot_details_logic(self: "DialogueState"):
     elif self.turn == "confirmed":
         return confirmed_callback
     else:
-        return f"{self.name}, {self.turn}"
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 
 def payment_details_logic(self: "DialogueState"):
@@ -183,7 +192,8 @@ def payment_details_logic(self: "DialogueState"):
     elif self.turn == "confirmed":
         return confirmed_callback
     else:
-        return f"{self.name}, {self.turn}"
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 
 def confirm_order_logic(self: "DialogueState"):
@@ -229,7 +239,8 @@ def confirm_order_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return order_confirm_callback(self)
     else:
-        return f"{self.name}, {self.turn}"
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
 
 
 def exit_logic(self: "DialogueState"):
@@ -238,4 +249,5 @@ def exit_logic(self: "DialogueState"):
     if self.turn == "confirm":
         return confirm_handler(self)
     else:
-        return f"{self.name}, {self.turn}"
+        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
+        return END_ERROR
