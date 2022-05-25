@@ -213,8 +213,9 @@ def confirm_order_logic(self: "DialogueState"):
                     not manager.finalised_values["payment"]["CARD_NUMBER"] and\
                     not manager.finalised_values["payment"]["CARD_CVC"] and\
                     not manager.finalised_values["payment"]["CARD_EXPIRY"]:
-
-                        return "Order processed succesfully! Thanks : D"
+                        self.forced_next_state = "exit"
+                        self.turn = "force_state"
+                        return "Order processed succesfully!"
                     else:
                         self.forced_next_state = "payment_details"
                         self.turn = "force_state_no_init"
@@ -235,7 +236,6 @@ def confirm_order_logic(self: "DialogueState"):
             self.turn = "force_state_no_init"
             return STATE_DEFAULTS["payment_details"]["add_to_basket"]
 
-
     if self.turn == "confirm":
         return order_confirm_callback(self)
     else:
@@ -245,9 +245,15 @@ def confirm_order_logic(self: "DialogueState"):
 
 def exit_logic(self: "DialogueState"):
     """Logic for the exit state"""
+    header = "oooooooooo.             o8o               .oooooo..o                                                              o8o "+ \
+    "`888'   `Y8b            `\"'              d8P'    `Y8                                                              `YP "+ \
+    " 888     888  .oooo.   oooo  ooo. .oo.   Y88bo.      oooo  oooo  oooo d8b oooo d8b  .ooooo.  oooo    ooo  .oooo.o  '  "+ \
+    " 888oooo888' `P  )88b  `888  `888P\"Y88b   `\"Y8888o.  `888  `888  `888""8P `888\"\"8P d88' `88b  `88.  .8'  d88(  \"8     "+ \
+    " 888    `88b  .oP\"888   888   888   888       `\"Y88b  888   888   888      888     888ooo888   `88..8'   `\"Y88b.      "+ \
+    " 888    .88P d8(  888   888   888   888  oo     .d8P  888   888   888      888     888    .o    `888'    o.  )88b     "+ \
+    "o888bood8P'  `Y888""8o o888o o888o o888o 8""88888P'   `V88V\"V8P' d888b    d888b    `Y8bod8P'     .8'     8""888P'     "+ \
+    "                                                                                            .o..P'                   "+ \
+    "                                                                                            `Y8P'                    "+ \
+    "                                                                                                                  "
 
-    if self.turn == "confirm":
-        return confirm_handler(self)
-    else:
-        logger.error(f"Fatal error: \n    State: {self.name}, Turn: {self.turn}, Message: {self.current_response}")
-        return END_ERROR
+    return "\n" + header + "\n Welcome! How can we help you?"

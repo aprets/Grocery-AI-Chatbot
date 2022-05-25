@@ -95,7 +95,7 @@ STATE_DEFAULTS = {
         "default_next_state": "init",
         "state_logic": exit_logic,
         "entity_mask": [],
-        "init_message": "Restarting conversation",
+        "init_message": "Restarting conversation...",
         "turn": "confirm"
     },
 }
