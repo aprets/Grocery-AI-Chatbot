@@ -14,7 +14,7 @@ class DialogueState():
         self.init_message = init_message
         self.turn = turn
 
-        self.current_response = None
+        self.current_response = current_response
         self.state_entities = entities
         self.entity_mask = entity_mask
 
