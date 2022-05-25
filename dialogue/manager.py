@@ -6,7 +6,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(leve
 
 from collections import deque
 
-from .states import STATE_DEFAULTS, DialogueState
+from .states import STATE_FUNCTIONS, DialogueState
+from dialogue.state_defaults import STATE_DEFAULTS
 
 from intent import predict_intent
 
@@ -163,3 +164,4 @@ class DialogueManager():
 
         self.prior_states.append(self.current_state)
         self.current_state = new_state
+        self.current_state.state_logic = STATE_FUNCTIONS[self.current_state.name]
